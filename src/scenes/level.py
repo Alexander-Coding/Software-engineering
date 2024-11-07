@@ -120,7 +120,7 @@ class Level:
         print(f"Обработка события в уровне: {event}")  # Отладка
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
-                from scenes.menu import MainMenu
+                from src.scenes.menu import MainMenu
                 self.game.change_scene(MainMenu(self.game))
             elif self.player:
                 self.player.handle_movement()

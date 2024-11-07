@@ -43,7 +43,7 @@ class Settings:
         pass
         
     def return_to_menu(self):
-        from scenes.menu import MainMenu
+        from src.scenes.menu import MainMenu
         self.game.change_scene(MainMenu(self.game))
         
     def update(self):

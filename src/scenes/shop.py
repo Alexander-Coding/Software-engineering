@@ -23,7 +23,7 @@ class Shop:
             elif event.key == pygame.K_RETURN:
                 self.buy_item()
             elif event.key == pygame.K_ESCAPE:
-                from scenes.menu import MainMenu
+                from src.scenes.menu import MainMenu
                 self.game.change_scene(MainMenu(self.game))
                 
     def buy_item(self):

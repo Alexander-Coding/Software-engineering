@@ -36,17 +36,17 @@ class MainMenu:
             screen.blit(text, text_rect)
             
     def start_game(self):
-        from scenes.level_select import LevelSelect
+        from src.scenes.level_select import LevelSelect
         self.game.change_scene(LevelSelect(self.game))
         
     def open_editor(self):
-        from scenes.level_editor import LevelEditor
+        from src.scenes.level_editor import LevelEditor
         self.game.change_scene(LevelEditor(self.game))
         
     def open_shop(self):
-        from scenes.shop import Shop
+        from src.scenes.shop import Shop
         self.game.change_scene(Shop(self.game))
         
     def open_settings(self):
-        from scenes.settings import Settings
+        from src.scenes.settings import Settings
         self.game.change_scene(Settings(self.game))

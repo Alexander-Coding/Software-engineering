@@ -1,9 +1,7 @@
 import pygame
-import sys
-sys.path.append(r'C:\Users\Alexa\github\BioSense\mario\src')
 
-from scenes.level import Level
-from config import *
+from src.scenes.level import Level
+from src.config import *
 
 class LevelSelect:
     def __init__(self, game):
@@ -37,7 +35,7 @@ class LevelSelect:
             elif event.key == pygame.K_RETURN:
                 self.start_level()
             elif event.key == pygame.K_ESCAPE:
-                from scenes.menu import MainMenu
+                from src.scenes.menu import MainMenu
                 self.game.change_scene(MainMenu(self.game))
                 
     def start_level(self):

@@ -15,6 +15,7 @@ class Player(pygame.sprite.Sprite):
         self.velocity_x = 0
         self.velocity_y = 0
         self.on_ground = False
+        self.is_jump = False
         
         # Состояния
         self.facing_right = True
@@ -22,6 +23,14 @@ class Player(pygame.sprite.Sprite):
         self.is_invincible = False
         self.current_animation = 'idle'
         self.animation_frame = 0
+
+        # Переменные измерений
+        self.PLAYER_SPEED = 2
+        self.PLAYER_JUMP_POWER = 0.7
+        self.PLAYER_JUMP_HEIGHT = 50
+        self.PLAYER_POSITION = None
+
+        self.GRAVITY = 0.6
         
     def load_sprites(self):
         self.sprites = {
@@ -46,7 +55,8 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
     
     def update(self):
-        self.apply_gravity()
+        if not self.on_ground and not self.is_jump:
+            self.apply_gravity()
         self.handle_movement()
         self.animate()
         
@@ -55,22 +65,35 @@ class Player(pygame.sprite.Sprite):
         
         # Горизонтальное движение
         self.velocity_x = 0
+
         if keys[pygame.K_LEFT]:
-            self.velocity_x = -PLAYER_SPEED
+            self.velocity_x = -self.PLAYER_SPEED
             self.facing_right = False
         if keys[pygame.K_RIGHT]:
-            self.velocity_x = PLAYER_SPEED
+            self.velocity_x = self.PLAYER_SPEED
             self.facing_right = True
             
         # Прыжок
         if keys[pygame.K_SPACE] and self.on_ground:
-            self.velocity_y = PLAYER_JUMP_POWER
+            self.velocity_y = self.PLAYER_JUMP_POWER
+            self.PLAYER_POSITION = 0
+            self.is_jump = True
             self.on_ground = False
-            
+
+        if self.is_jump and self.PLAYER_JUMP_HEIGHT > self.PLAYER_POSITION:
+            self.velocity_y += self.PLAYER_JUMP_POWER
+            self.rect.y -= self.velocity_y
+            self.PLAYER_POSITION += self.velocity_y
+            print("***********", self.PLAYER_JUMP_HEIGHT, self.PLAYER_POSITION)
+        else:
+            self.is_jump = False
+            print(self.is_jump)
+
         self.rect.x += self.velocity_x
-        
+        self.rect.y -= self.velocity_y
+
     def apply_gravity(self):
-        self.velocity_y += GRAVITY
+        self.velocity_y += self.GRAVITY
         self.rect.y += self.velocity_y
         
     def animate(self):

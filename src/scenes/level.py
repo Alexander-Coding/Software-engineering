@@ -1,3 +1,5 @@
+import sys
+sys.path.append(r'C:\Users\Alexa\github\BioSense\mario\src')
 import pygame
 import json
 
@@ -131,7 +133,6 @@ class Level:
                 
     def update(self):
         try:
-            print("Обновление уровня")  # Отладка
             if not self.player or len(self.all_sprites) == 0:
                 print("Ошибка: уровень не инициализирован корректно")
                 self.create_default_level()
@@ -149,8 +150,19 @@ class Level:
                 # Коллизии с блоками
                 blocks_hit = pygame.sprite.spritecollide(self.player, self.blocks, False)
                 for block in blocks_hit:
-                    # Обработка коллизий
-                    pass
+                    if self.player.velocity_x > 0:  # Движение вправо
+                        self.player.rect.right = block.rect.left
+                    elif self.player.velocity_x < 0:  # Движение влево
+                        self.player.rect.left = block.rect.right
+                    if self.player.velocity_y > 0:  # Падение
+                        self.player.rect.bottom = block.rect.top
+                        self.player.velocity_y = 0
+                        self.player.on_ground = True
+                    elif self.player.velocity_y < 0:  # Прыжок
+                        self.player.rect.top = block.rect.bottom
+                        self.player.velocity_y = 0
+                        self.player.animate()
+                self.player.rect.y += self.player.velocity_y
                     
         except Exception as e:
             print(f"Ошибка при обновлении уровня: {e}")

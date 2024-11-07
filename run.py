@@ -8,7 +8,4 @@ from src.main import Game
 
 if __name__ == "__main__":
     game = Game()
-    try:
-        game.run()
-    finally:
-        game.quit()
+    game.run()

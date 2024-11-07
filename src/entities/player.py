@@ -8,8 +8,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
         self.load_sprites()
-        self.image = pygame.Surface((32, 32))
-        #self.image = self.sprites['idle'][0]
+        self.image = self.sprites['idle'][0]
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -28,11 +27,25 @@ class Player(pygame.sprite.Sprite):
         
     def load_sprites(self):
         self.sprites = {
-            'idle': [self.image.fill((139, 69, 19))],  # Здесь будут спрайты из asset_loader
-            'run': [self.image.fill((139, 69, 19))],
-            'jump': [self.image.fill((139, 69, 19))],
-            'fall': [self.image.fill((139, 69, 19))]
+            'idle': [
+                pygame.image.load('assets/images/characters/mario/small/idle.png').convert_alpha()
+            ],
+            'run': [
+                pygame.image.load('assets/images/characters/mario/small/run1.png').convert_alpha(),
+                pygame.image.load('assets/images/characters/mario/small/run2.png').convert_alpha(),
+                pygame.image.load('assets/images/characters/mario/small/run3.png').convert_alpha()
+            ],
+            'jump': [
+                pygame.image.load('assets/images/characters/mario/small/jump.png').convert_alpha()
+            ],
+            'fall': [
+                pygame.image.load('assets/images/characters/mario/small/death.png').convert_alpha()
+            ]
         }
+        
+        # Устанавливаем начальный спрайт
+        self.image = self.sprites['idle'][0]
+        self.rect = self.image.get_rect()
     
     def update(self):
         self.apply_gravity()

@@ -24,25 +24,27 @@ class Game:
             self.clock.tick(FPS)
             
     def handle_events(self):
-        for event in pygame.event.get():
+         for event in pygame.event.get():
+            print(event)
             if event.type == pygame.QUIT:
                 self.quit()
+                return
+
             self.current_scene.handle_event(event)
     
     def update(self):
         self.current_scene.update()
-    
+                
     def draw(self):
-        self.screen.fill(BLACK)
         self.current_scene.draw(self.screen)
         pygame.display.flip()
-    
-    def change_scene(self, scene):
-        self.current_scene = scene
-    
+                
     def quit(self):
         pygame.quit()
         sys.exit()
+    
+    def change_scene(self, scene):
+        self.current_scene = scene
 
 if __name__ == "__main__":
     game = Game()

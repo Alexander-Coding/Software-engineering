@@ -123,12 +123,7 @@ class Level:
                 from scenes.menu import MainMenu
                 self.game.change_scene(MainMenu(self.game))
             elif self.player:
-                if event.key == pygame.K_LEFT:
-                    self.player.move_left()
-                elif event.key == pygame.K_RIGHT:
-                    self.player.move_right()
-                elif event.key == pygame.K_SPACE:
-                    self.player.jump()
+                self.player.handle_movement()
                 
     def pause_game(self):
         self.game.is_paused = True

@@ -1,8 +1,6 @@
 import json
 import os
-import sys
-sys.path.append(r'C:\Users\Alexa\github\BioSense\mario\src')
-from config import SAVE_FILE
+from src.config import SAVE_FILE
 
 class SaveSystem:
     @staticmethod

@@ -1,11 +1,10 @@
-import sys
-sys.path.append(r'C:\Users\Alexa\github\BioSense\mario\src')
 import pygame
 import json
-from config import *
-from entities.player import Player
-from entities.enemy import Enemy
-from entities.block import Block
+
+from src.config import *
+from src.entities.player import Player
+from src.entities.enemy import Enemy
+from src.entities.block import Block
 
 class Level:
     def __init__(self, game, level_id):

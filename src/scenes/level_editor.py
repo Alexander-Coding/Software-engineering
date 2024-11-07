@@ -2,10 +2,8 @@ import pygame
 import json
 import os
 
-import sys
-sys.path.append(r'C:\Users\Alexa\github\BioSense\mario\src')
 from pathlib import Path
-from config import *
+from src.config import *
 from pygame.locals import *
 
 class LevelEditor:

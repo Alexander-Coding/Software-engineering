@@ -1,8 +1,6 @@
 import pygame
-import sys
-sys.path.append(r'C:\Users\Alexa\github\BioSense\mario\src')
-from config import *
-from utils.asset_loader import AssetLoader
+from src.config import *
+from src.utils.asset_loader import AssetLoader
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y):

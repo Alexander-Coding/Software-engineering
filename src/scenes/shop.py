@@ -1,8 +1,6 @@
 import pygame
-import sys
-sys.path.append(r'C:\Users\Alexa\github\BioSense\mario\src')
-from utils.save_system import SaveSystem
-from config import *
+from src.utils.save_system import SaveSystem
+from src.config import *
 
 class Shop:
     def __init__(self, game):

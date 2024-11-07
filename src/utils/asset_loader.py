@@ -1,8 +1,6 @@
 import os
 import pygame
-import sys
-sys.path.append(r'C:\Users\Alexa\github\BioSense\mario\src')
-from config import ASSETS_DIR
+from src.config import ASSETS_DIR
 
 class AssetLoader:
     def __init__(self):

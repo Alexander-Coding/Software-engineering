@@ -1,8 +1,6 @@
 import pygame
-import sys
-sys.path.append(r'C:\Users\Alexa\github\BioSense\mario\src')
-from config import *
-from utils.animation import AnimationController
+from src.config import *
+from src.utils.animation import AnimationController
 
 class PowerUp(pygame.sprite.Sprite):
     def __init__(self, x, y, powerup_type='mushroom'):

@@ -1,7 +1,6 @@
 import pygame
-import sys
-sys.path.append(r'C:\Users\Alexa\github\BioSense\mario\src')
-from config import *
+from src.config import *
+
 
 class Coin(pygame.sprite.Sprite):
     def __init__(self, x, y):

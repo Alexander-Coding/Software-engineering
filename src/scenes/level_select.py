@@ -4,7 +4,6 @@ import json
 from src.scenes.level import Level
 from src.config import *
 
-
 class LevelSelect:
     def __init__(self, game):
         self.game = game

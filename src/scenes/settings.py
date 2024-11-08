@@ -8,7 +8,7 @@ class Settings:
         self.sound_manager = self.game.sound_manager
         self.options = [
             {'name': 'Громкость музыки', 'value': int(self.sound_manager.music_volume * 100), 'min': 0, 'max': 100},
-            {'name': 'Громкость звуков', 'value': 100, 'min': 0, 'max': 100},
+            {'name': 'Громкость звуков', 'value': int(self.sound_manager.sound_volume * 100), 'min': 0, 'max': 100},
             {'name': 'Управление', 'action': self.show_controls},
             {'name': 'Назад', 'action': self.return_to_menu}
         ]
@@ -20,7 +20,21 @@ class Settings:
         # Замените 'assets/images/backgrounds/settings_background.png' на фактический путь к вашему файлу фона
         self.background_image = pygame.transform.scale(self.background_image, (WINDOW_WIDTH, WINDOW_HEIGHT))
 
+        # Загружаем настройки из файла
+        self.load_settings()
 
+    def load_settings(self):
+        try:
+            with open('settings.txt', 'r') as f:
+                music_volume, sound_volume = map(float, f.read().split(','))
+                self.options[0]['value'] = int(music_volume * 100)
+                self.options[1]['value'] = int(sound_volume * 100)
+        except FileNotFoundError:
+            pass  # Файл настроек не найден, используем значения по умолчанию
+
+    def save_settings(self):
+        with open('settings.txt', 'w') as f:
+            f.write(f"{self.options[0]['value'] / 100},{self.options[1]['value'] / 100}")
 
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
@@ -44,9 +58,10 @@ class Settings:
             self.apply_settings()
 
     def apply_settings(self):
-        # Используем SoundManager для изменения громкости музыки
+        # Используем SoundManager для изменения громкости музыки и звуков
         self.sound_manager.set_music_volume(self.options[0]['value'] / 100)
-        # Применить другие настройки
+        self.sound_manager.set_sound_volume(self.options[1]['value'] / 100)
+        self.save_settings() # Сохраняем изменения в файл
 
     def show_controls(self):
         # Показать экран с управлением

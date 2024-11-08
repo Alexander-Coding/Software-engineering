@@ -3,10 +3,11 @@ from src.config import *
 
 
 class Block(pygame.sprite.Sprite):
-    def __init__(self, x, y, block_type='ground'):
+    def __init__(self, x, y, block_type, image_path):
         super().__init__()
         print(f"Создание блока на {x}, {y}")
         self.block_type = block_type
+        self.image_path = image_path
         self.load_sprite()
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -23,7 +24,7 @@ class Block(pygame.sprite.Sprite):
             self.image.fill((255, 200, 0))
 
         else:
-            self.image.fill((139, 69, 19))
+            self.image = pygame.image.load(str(self.image_path))
             
     def hit(self):
         if self.block_type == 'question' and self.has_coin:

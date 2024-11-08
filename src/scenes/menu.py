@@ -8,10 +8,10 @@ from src.config import *
 class MainMenu:
     def __init__(self, game):
         self.game = game
+        self.sound_manager = self.game.sound_manager
         self.buttons = [
             {'text': 'Играть', 'action': self.start_game},
             {'text': 'Редактор уровней', 'action': self.open_editor},
-            {'text': 'Магазин', 'action': self.open_shop},
             {'text': 'Настройки', 'action': self.open_settings},
             {'text': 'Выход', 'action': self.game.quit}
         ]
@@ -31,7 +31,6 @@ class MainMenu:
                 self.selected = (self.selected + 1) % len(self.buttons)
             elif event.key == pygame.K_RETURN:
                 self.buttons[self.selected]['action']()
-
     def update(self):
         pass
 
@@ -47,15 +46,12 @@ class MainMenu:
 
     def start_game(self):
         from src.scenes.level_select import LevelSelect
+
         self.game.change_scene(LevelSelect(self.game))
 
     def open_editor(self):
         from src.scenes.level_editor import LevelEditor
         self.game.change_scene(LevelEditor(self.game))
-
-    def open_shop(self):
-        from src.scenes.shop import Shop
-        self.game.change_scene(Shop(self.game))
 
     def open_settings(self):
         from src.scenes.settings import Settings

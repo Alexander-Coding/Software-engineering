@@ -8,13 +8,12 @@ from src.entities.block import Block
 from src.entities import enemies
 
 class Level:
-    def __init__(self, game, level_id):
+    def __init__(self, game, level_id, level_data):
         super().__init__()  # Если наследуется от базового класса Scene
         self.game = game
         self.level_id = level_id
-
         self.camera_x = 0
-        
+        self.level_data = level_data
         # Инициализация групп спрайтов
         self.all_sprites = pygame.sprite.Group()
         self.blocks = pygame.sprite.Group()

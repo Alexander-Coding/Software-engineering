@@ -1,8 +1,6 @@
+import os
 import pygame
-import sys
-
-sys.path.append(r'C:\Users\Alexa\github\BioSense\mario\src')
-
+import json
 from src.scenes.level import Level
 from src.config import *
 
@@ -11,36 +9,46 @@ class LevelSelect:
     def __init__(self, game):
         self.game = game
         self.levels = self.get_available_levels()
-        self.selected_level = 1
+        self.selected_level = 0  # Начинаем с первого уровня
         self.font = pygame.font.Font(None, 36)
 
         # Загружаем фон для меню выбора уровня
         self.background_image = pygame.image.load('assets/images/backgrounds/level_selected.png').convert_alpha()
-        # Замените 'assets/level_select_background.png' на фактическое имя файла вашего фона
         self.background_image = pygame.transform.scale(self.background_image, (WINDOW_WIDTH, WINDOW_HEIGHT))
 
     def get_available_levels(self):
         completed_levels = self.game.game_state.save_data['completed_levels']
         levels = []
 
-        for i in range(1, 6):  # Предположим, у нас 5 уровней
-            status = "Пройден" if i in completed_levels else "Не пройден"
-            locked = i > 1 and (i - 1) not in completed_levels
-            levels.append({
-                'id': i,
-                'name': f"Уровень {i}",
-                'status': status,
-                'locked': locked
-            })
+        # Читаем JSON-файлы из папки levels
+        for filename in os.listdir('levels'):
+            if filename.endswith('.json'):
+                with open(os.path.join('levels', filename), 'r') as f:
+                    level_data = json.load(f)
+                    level_name = filename[:-5]  # Имя файла без .json
+                    status = "Пройден" if level_name in completed_levels else "Не пройден"
+                    locked = len(levels) > 0 and levels[-1]['name'] not in completed_levels
+                    levels.append({
+                        'name': level_name,
+                        'status': status,
+                        'locked': locked,
+                        'data': level_data  # Добавляем данные уровня
+                    })
 
         return levels
 
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
-                self.selected_level = (self.selected_level - 1) % len(self.levels)
+                # Находим предыдущий доступный уровень
+                self.selected_level = max(0, self.selected_level - 1)
+                while self.selected_level >= 0 and self.levels[self.selected_level]['locked']:
+                    self.selected_level -= 1
             elif event.key == pygame.K_DOWN:
+                # Находим следующий доступный уровень
                 self.selected_level = (self.selected_level + 1) % len(self.levels)
+                while self.levels[self.selected_level]['locked']:
+                    self.selected_level = (self.selected_level + 1) % len(self.levels)
             elif event.key == pygame.K_RETURN:
                 self.start_level()
             elif event.key == pygame.K_ESCAPE:
@@ -50,7 +58,7 @@ class LevelSelect:
     def start_level(self):
         level = self.levels[self.selected_level]
         if not level['locked']:
-            self.game.change_scene(Level(self.game, level['id']))
+            self.game.change_scene(Level(self.game, level['name'], level['data']))
 
     def update(self):
         pass

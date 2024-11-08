@@ -4,8 +4,8 @@ import json
 
 from src.config import *
 from src.entities.player import Player
-from src.entities.enemy import Enemy
 from src.entities.block import Block
+from src.entities import enemies
 
 class Level:
     def __init__(self, game, level_id):
@@ -33,7 +33,7 @@ class Level:
 
     def load_level(self):
         try:
-            with open(f'levels/level_{self.level_id}.json', 'r') as f:
+            with open(f'levels\level_{self.level_id}.json', 'r') as f:
                 level_data = json.load(f)
                 print(f"Данные уровня загружены: {level_data}")
                 
@@ -44,16 +44,37 @@ class Level:
                         self.player = Player(obj['x'], obj['y'])
                         if not self.player:
                             raise Exception("Не удалось создать игрока")
+                        
                         print("Игрок создан успешно")
                         self.all_sprites.add(self.player)
                         print("Игрок добавлен в группу спрайтов")
+
+                        block = Block(obj['x'], obj['y'], obj['asset_name'], obj['image_path'])
+                        self.all_sprites.add(block)
                         
                     elif obj['type'] == 'block':
                         print(f"Создание блока на позиции {obj['x']}, {obj['y']}")
-                        block = Block(obj['x'], obj['y'], obj['asset_name'])
+                        block = Block(obj['x'], obj['y'], obj['asset_name'], obj['image_path'])
                         self.blocks.add(block)
                         self.all_sprites.add(block)
                         print("Блок создан и добавлен")
+
+                    elif obj['type'] == 'enemy':
+                        enemy = getattr(enemies, obj['class'])
+
+                        if obj['behavior'] == None:
+                            enemy_obj = enemy(obj['x'], obj['y'], obj['color'])
+
+                        else:
+                            enemy_obj = enemy(obj['x'], obj['y'], obj['color'], obj['behavior'])
+
+                        enemy_obj.game = self.game  # Устанавливаем ссылку на игру
+                        self.enemies.add(enemy_obj)
+                        self.all_sprites.add(enemy_obj)
+
+                    else:
+                        block = Block(obj['x'], obj['y'], obj['asset_name'], obj['image_path'])
+                        self.all_sprites.add(block)
                         
                 except Exception as e:
                     print(f"Ошибка при создании объекта {obj}: {e}")

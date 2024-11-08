@@ -32,11 +32,7 @@ class Level:
 
     def load_level(self):
         try:
-            with open(f'levels\level_{self.level_id}.json', 'r') as f:
-                level_data = json.load(f)
-                print(f"Данные уровня загружены: {level_data}")
-                
-            for obj in level_data:
+            for obj in self.level_data:
                 try:
                     if obj['type'] == 'spawn':
                         print(f"Создание игрока на позиции {obj['x']}, {obj['y']}")

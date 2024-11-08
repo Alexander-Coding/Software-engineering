@@ -11,6 +11,7 @@ class Player(pygame.sprite.Sprite):
 
         self.load_sprites()
         self.image = self.sprites['idle'][0]
+        self.image = pygame.transform.scale(self.image, (24, 32))
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y

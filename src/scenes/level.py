@@ -78,7 +78,7 @@ class Level:
                 except Exception as e:
                     print(f"Ошибка при создании объекта {obj}: {e}")
                     continue
-                    
+            self.player.blocks = self.blocks
             print(f"Всего спрайтов: {len(self.all_sprites)}")
             print(f"Всего блоков: {len(self.blocks)}")
             print(f"Игрок существует: {self.player is not None}")
@@ -108,12 +108,18 @@ class Level:
                 
             # Обновляем всех спрайтов
             self.all_sprites.update()
-            
+
+            # Обновляем игрока
+            if self.player:
+                self.player.update()
+
             # Обновляем позицию камеры
             self.update_camera()
                 
         except Exception as e:
             print(f"Ошибка при обновлении уровня: {e}")
+            import traceback
+            traceback.print_exc()
 
     def update_camera(self):
         try:
@@ -149,57 +155,8 @@ class Level:
     def pause_game(self):
         self.game.is_paused = True
         # Показать меню паузы
-                
-    def update(self):
-        try:
-            if not self.player or len(self.all_sprites) == 0:
-                print("Ошибка: уровень не инициализирован корректно")
-                self.create_default_level()
-                return
-                
-            # Обновляем всех спрайтов
-            self.all_sprites.update()
-            
-            # Обновляем игрока
-            if self.player:
-                self.player.update()
-                
-            # Проверяем коллизии
-            if self.player:
-                # Коллизии с блоками
-                blocks_hit = pygame.sprite.spritecollide(self.player, self.blocks, False)
-                for block in blocks_hit:
-                    if self.player.velocity_x > 0:  # Движение вправо
-                        self.player.rect.right = block.rect.left
-                    elif self.player.velocity_x < 0:  # Движение влево
-                        self.player.rect.left = block.rect.right
-                    if self.player.velocity_y > 0:  # Падение
-                        self.player.rect.bottom = block.rect.top
-                        self.player.velocity_y = 0
-                        self.player.on_ground = True
-                    elif self.player.velocity_y < 0:  # Прыжок
-                        self.player.rect.top = block.rect.bottom
-                        self.player.velocity_y = 0
-                        self.player.animate()
-                self.player.rect.y += self.player.velocity_y
-                    
-        except Exception as e:
-            print(f"Ошибка при обновлении уровня: {e}")
-            import traceback
-            traceback.print_exc()
-        
+
     def handle_collisions(self):
-        # Коллизии с блоками
-        hits = pygame.sprite.spritecollide(self.player, self.blocks, False)
-        for block in hits:
-            if self.player.velocity_y > 0:
-                self.player.rect.bottom = block.rect.top
-                self.player.velocity_y = 0
-                self.player.on_ground = True
-            elif self.player.velocity_y < 0:
-                self.player.rect.top = block.rect.bottom
-                self.player.velocity_y = 0
-                
         # Коллизии с врагами
         hits = pygame.sprite.spritecollide(self.player, self.enemies, False)
         for enemy in hits:
@@ -219,15 +176,3 @@ class Level:
     def game_over(self):
         # Показать экран game over
         pass
-        
-    def update_camera(self):
-        target_x = self.player.rect.centerx - WINDOW_WIDTH // 2
-        self.camera_x += (target_x - self.camera_x) * 0.1
-        
-    def draw(self, screen):
-        screen.fill((107, 140, 255))  # Цвет неба
-        
-        for sprite in self.all_sprites:
-            screen.blit(sprite.image, 
-                       (sprite.rect.x - self.camera_x, sprite.rect.y))
-        

@@ -8,24 +8,49 @@ class PhysicsEngine:
     
     @staticmethod
     def resolve_collision(entity, blocks):
-        hits = pygame.sprite.spritecollide(entity, blocks, False)
-        
-        for block in hits:
-            # Вертикальные коллизии
-            if entity.velocity_y > 0:  # Падение
-                entity.rect.bottom = block.rect.top
-                entity.velocity_y = 0
-                entity.on_ground = True
-            elif entity.velocity_y < 0:  # Прыжок
-                entity.rect.top = block.rect.bottom
-                entity.velocity_y = 0
-                
-            # Горизонтальные коллизии
-            if entity.velocity_x > 0:  # Движение вправо
-                entity.rect.right = block.rect.left
-            elif entity.velocity_x < 0:  # Движение влево
-                entity.rect.left = block.rect.right
-                
+        original_rect = self.rect.copy()
+
+        # Проверяем вертикальные коллизии
+        self.rect.y += self.velocity_y  # Сначала обновляем вертикальную позицию
+        blocks_hit = pygame.sprite.spritecollide(self, self.blocks, False)
+
+        for block in blocks_hit:
+            if self.velocity_y > 0:  # Падение вниз
+                print("НИЗ")
+                self.rect.bottom = block.rect.top  # Устанавливаем нижнюю границу игрока на верхнюю границу блока
+                self.velocity_y = 0  # Обнуляем вертикальную скорость
+                self.on_ground = True  # Игрок теперь на земле
+            elif self.velocity_y < 0:  # Подъем вверх
+                print("ВВЕРХ")
+                self.rect.top = block.rect.bottom  # Устанавливаем верхнюю границу игрока на нижнюю границу блока
+                self.velocity_y = 0  # Обнуляем вертикальную скорость
+
+        # Проверяем горизонтальные коллизии
+        current_rect = self.rect.copy()
+        self.rect.x += self.velocity_x
+        blocks_hit_horizontal = pygame.sprite.spritecollide(self, self.blocks, False)
+
+        for block in blocks_hit_horizontal:
+            if self.velocity_x > 0:  # Движение вправо
+                print("ПРАВО")
+                self.rect.right = block.rect.left
+            elif self.velocity_x < 0:  # Движение влево
+                print("ВЛЕВО")
+                self.rect.left = block.rect.right
+
+                # Проверка состояния on_ground после обработки коллизий
+        if not blocks_hit:  # Если нет вертикальных коллизий
+            self.on_ground = False
+
+            # Проверка на наличие блока под игроком
+            for block in self.blocks:
+                if (self.rect.bottom >= block.rect.top and
+                        self.rect.bottom <= block.rect.bottom and
+                        self.rect.centerx >= block.rect.left and
+                        self.rect.centerx <= block.rect.right):
+                    print("Находимся на блоке")
+                    self.on_ground = True
+                    break
     @staticmethod
     def apply_gravity(entity):
         if not entity.on_ground:

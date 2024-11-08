@@ -2,9 +2,13 @@ import pygame
 from src.config import *
 from src.utils.asset_loader import AssetLoader
 
+
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
+
+        self.tick = pygame.time.Clock().tick(60)
+
         self.load_sprites()
         self.image = self.sprites['idle'][0]
         self.rect = self.image.get_rect()
@@ -15,7 +19,6 @@ class Player(pygame.sprite.Sprite):
         self.velocity_x = 0
         self.velocity_y = 0
         self.on_ground = False
-        self.is_jump = False
         
         # Состояния
         self.facing_right = True
@@ -25,12 +28,11 @@ class Player(pygame.sprite.Sprite):
         self.animation_frame = 0
 
         # Переменные измерений
-        self.PLAYER_SPEED = 2
-        self.PLAYER_JUMP_POWER = 0.7
-        self.PLAYER_JUMP_HEIGHT = 50
-        self.PLAYER_POSITION = None
+        self.PLAYER_SPEED = 300
+        self.PLAYER_JUMP_POWER = 8
+        self.GRAVITY = 10
 
-        self.GRAVITY = 0.6
+        self.blocks = pygame.sprite.Group()
         
     def load_sprites(self):
         self.sprites = {
@@ -53,49 +55,66 @@ class Player(pygame.sprite.Sprite):
         # Устанавливаем начальный спрайт
         self.image = self.sprites['idle'][0]
         self.rect = self.image.get_rect()
-    
+
     def update(self):
-        if not self.on_ground and not self.is_jump:
+        if not self.on_ground:
             self.apply_gravity()
         self.handle_movement()
         self.animate()
-        
+
     def handle_movement(self):
         keys = pygame.key.get_pressed()
-        
+
         # Горизонтальное движение
         self.velocity_x = 0
 
         if keys[pygame.K_LEFT]:
-            self.velocity_x = -self.PLAYER_SPEED
+            self.velocity_x = -self.PLAYER_SPEED * (self.tick/1000)
             self.facing_right = False
-        if keys[pygame.K_RIGHT]:
-            self.velocity_x = self.PLAYER_SPEED
+        elif keys[pygame.K_RIGHT]:
+            self.velocity_x = self.PLAYER_SPEED * (self.tick/1000)
             self.facing_right = True
-            
+
         # Прыжок
-        if keys[pygame.K_SPACE] and self.on_ground:
-            self.velocity_y = self.PLAYER_JUMP_POWER
-            self.PLAYER_POSITION = 0
-            self.is_jump = True
+        if keys[pygame.K_UP] and self.on_ground:
+            self.velocity_y -= self.PLAYER_JUMP_POWER
             self.on_ground = False
 
-        if self.is_jump and self.PLAYER_JUMP_HEIGHT > self.PLAYER_POSITION:
-            self.velocity_y += self.PLAYER_JUMP_POWER
-            self.rect.y -= self.velocity_y
-            self.PLAYER_POSITION += self.velocity_y
-            print("***********", self.PLAYER_JUMP_HEIGHT, self.PLAYER_POSITION)
-        else:
-            self.is_jump = False
-            print(self.is_jump)
+        # Проверка столкновений с блоками
+        for block in self.blocks:
+            # Проверка столкновения по оси X
+            if block.rect.colliderect(self.rect.move(self.velocity_x, 0)):
+                self.velocity_x = 0
 
+            # Проверка столкновения по оси Y
+            if block.rect.colliderect(self.rect.move(0, self.velocity_y)):
+                if self.velocity_y > 0:  # Падение
+                    self.rect.bottom = block.rect.top  # Устанавливаем игрока на верх блока
+                    self.velocity_y = 0
+                    self.on_ground = True  # Игрок на земле
+                elif self.velocity_y < 0:  # Подъем (прыжок)
+                    self.rect.top = block.rect.bottom  # Устанавливаем игрока на низ блока
+                    self.velocity_y = 0
+        if not self.handle_collision():
+            self.on_ground = False
+
+        # Обновляем позицию игрока
         self.rect.x += self.velocity_x
-        self.rect.y -= self.velocity_y
+        self.rect.y += self.velocity_y
+
+    def handle_collision(self):
+        """Проверяет, стоит ли персонаж на платформе."""
+        for block in self.blocks:
+            if block.rect.colliderect(self.rect.move(0, 1)):  # Проверяем, есть ли коллизия с блоком чуть ниже персонажа
+                return True
+        return False
 
     def apply_gravity(self):
-        self.velocity_y += self.GRAVITY
-        self.rect.y += self.velocity_y
-        
+        if not self.on_ground:
+            self.velocity_y += self.GRAVITY * (self.tick/1000) # Применяем гравитацию к вертикальной скорости
+            if self.velocity_y > 5:
+                self.velocity_y = 5
+
     def animate(self):
         if not self.on_ground:
             self.current_animation = 'jump' if self.velocity_y < 0 else 'fall'

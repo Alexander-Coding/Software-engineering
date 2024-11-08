@@ -8,13 +8,12 @@ from src.entities.enemy import Enemy
 from src.entities.block import Block
 
 class Level:
-    def __init__(self, game, level_id):
+    def __init__(self, game, level_id, level_data):
         super().__init__()  # Если наследуется от базового класса Scene
         self.game = game
         self.level_id = level_id
-
         self.camera_x = 0
-        
+        self.level_data = level_data
         # Инициализация групп спрайтов
         self.all_sprites = pygame.sprite.Group()
         self.blocks = pygame.sprite.Group()
@@ -33,11 +32,7 @@ class Level:
 
     def load_level(self):
         try:
-            with open(f'levels/level_{self.level_id}.json', 'r') as f:
-                level_data = json.load(f)
-                print(f"Данные уровня загружены: {level_data}")
-                
-            for obj in level_data:
+            for obj in self.level_data:
                 try:
                     if obj['type'] == 'spawn':
                         print(f"Создание игрока на позиции {obj['x']}, {obj['y']}")

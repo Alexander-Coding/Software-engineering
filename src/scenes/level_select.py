@@ -25,7 +25,7 @@ class LevelSelect:
             if filename.endswith('.json'):
                 with open(os.path.join('levels', filename), 'r') as f:
                     level_data = json.load(f)
-                    level_name = filename[6:-5]  # Имя файла без .json
+                    level_name = filename[:-5]  # Имя файла без .json
                     status = "Пройден" if level_name in completed_levels else "Не пройден"
                     locked = len(levels) > 0 and levels[-1]['name'] not in completed_levels
                     levels.append({
@@ -40,9 +40,15 @@ class LevelSelect:
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
-                self.selected_level = (self.selected_level - 1) % len(self.levels)
+                # Находим предыдущий доступный уровень
+                self.selected_level = max(0, self.selected_level - 1)
+                while self.selected_level >= 0 and self.levels[self.selected_level]['locked']:
+                    self.selected_level -= 1
             elif event.key == pygame.K_DOWN:
+                # Находим следующий доступный уровень
                 self.selected_level = (self.selected_level + 1) % len(self.levels)
+                while self.levels[self.selected_level]['locked']:
+                    self.selected_level = (self.selected_level + 1) % len(self.levels)
             elif event.key == pygame.K_RETURN:
                 self.start_level()
             elif event.key == pygame.K_ESCAPE:

@@ -13,6 +13,7 @@ BLUE = (0, 0, 255)
 
 # Настройки игрока
 PLAYER_SPEED = 5
+MAX_FALL_SPEED = 5
 PLAYER_JUMP_POWER = -15
 GRAVITY = 0.8
 

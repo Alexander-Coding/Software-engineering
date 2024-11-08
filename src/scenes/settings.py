@@ -12,6 +12,10 @@ class Settings:
         ]
         self.selected_option = 0
         self.font = pygame.font.Font(None, 36)
+        # Загружаем фон
+        self.background_image = pygame.image.load('assets/images/backgrounds/main_menu_background.png').convert_alpha()
+
+        self.background_image = pygame.transform.scale(self.background_image, (WINDOW_WIDTH, WINDOW_HEIGHT))
         
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:

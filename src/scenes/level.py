@@ -1,5 +1,4 @@
-import sys
-sys.path.append(r'C:\Users\Alexa\github\BioSense\mario\src')
+
 import pygame
 import json
 

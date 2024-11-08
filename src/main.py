@@ -14,8 +14,8 @@ class Game:
         self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
-        music_fon = SoundManager()
-        music_fon.load_music()
+        self.sound_manager = SoundManager()
+        self.sound_manager.load_music()
         self.game_state = GameState()
         self.current_scene = MainMenu(self)
         

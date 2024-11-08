@@ -4,7 +4,7 @@ from src.config import *
 class SoundManager:
     def __init__(self):
         self.sounds = {}
-        self.music_volume = 1.0
+        self.music_volume = 0.0
         self.sound_volume = 10.0
         self.load_sounds()
         self.load_music()

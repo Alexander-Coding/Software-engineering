@@ -5,23 +5,22 @@ class SoundManager:
     def __init__(self):
         self.sounds = {}
         self.music_volume = 1.0
-        self.sound_volume = 10.0
+        self.sound_volume = 1.0
         self.load_sounds()
         self.load_music()
 
     def load_sounds(self):
         sound_files = {
-            # 'jump': 'jump.wav',
-            # 'coin': 'coin.wav',
-            # 'powerup': 'powerup.wav',
-            # 'death': 'death.wav',
-            # 'stomp': 'stomp.wav',
-            # 'break': 'break.wav'
+            'jump': 'jump.mp3',
+            'coins': 'coins.mp3',
+            'powerup': 'powerup.mp3',
+            'death': 'death.mp3',
+            'stomp': 'stomp.mp3',
         }
 
         for sound_name, file_name in sound_files.items():
             try:
-                sound = pygame.mixer.Sound(f'assets/sounds/{file_name}')
+                sound = pygame.mixer.Sound(f'assets/musics/{file_name}')
                 self.sounds[sound_name] = sound
             except pygame.error:
                 print(f"Не удалось загрузить звук: {file_name}")

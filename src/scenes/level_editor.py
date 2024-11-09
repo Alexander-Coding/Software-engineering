@@ -168,8 +168,6 @@ class LevelEditor:
                     self.level_data = [tile for tile in self.level_data if not (tile['x'] == grid_x * self.grid_size and tile['y'] == grid_y * self.grid_size)]
                 
                 elif event.button == 1:  # ЛКМ
-                    self.mouse_held = True
-                    
                     if self.save_button_rect.collidepoint(mouse_pos):
                         self.mouse_held = False
                         self.showing_save_dialog = True
@@ -184,6 +182,7 @@ class LevelEditor:
                             
                     else:
                         if self.current_tile:
+                            self.mouse_held = True
                             self.place_tile()
 
             elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:

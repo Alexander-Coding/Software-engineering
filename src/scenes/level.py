@@ -5,13 +5,14 @@ import json
 from src.config import *
 from src.entities.player import Player
 from src.entities.block import Block
+from src.entities.powerup import PowerUp
+from src.entities.coin import Coin
 from src.entities import enemies
 from src.scenes.pause_menu import PauseMenu
 
 
 class Level:
     def __init__(self, game, level_id, level_data):
-        super().__init__()  # Если наследуется от базового класса Scene
         self.game = game
         self.level_id = level_id
         self.camera_x = 0
@@ -34,57 +35,52 @@ class Level:
             self.all_sprites.add(self.player)
 
     def load_level(self):
-        try:
-            for obj in self.level_data:
-                try:
-                    if obj['type'] == 'spawn':
-                        print(f"Создание игрока на позиции {obj['x']}, {obj['y']}")
-                        self.player = Player(obj['x'], obj['y'])
-                        if not self.player:
-                            raise Exception("Не удалось создать игрока")
-                        
-                        print("Игрок создан успешно")
-                        self.all_sprites.add(self.player)
-                        print("Игрок добавлен в группу спрайтов")
+        for obj in self.level_data:
+            if obj['type'] == 'block':
+                block = Block(obj['x'], obj['y'], obj['asset_name'], obj['image_path'])
 
-                        block = Block(obj['x'], obj['y'], obj['asset_name'], obj['image_path'])
-                        self.all_sprites.add(block)
-                        
-                    elif obj['type'] == 'block':
-                        print(f"Создание блока на позиции {obj['x']}, {obj['y']}")
-                        block = Block(obj['x'], obj['y'], obj['asset_name'], obj['image_path'])
-                        self.blocks.add(block)
-                        self.all_sprites.add(block)
-                        print("Блок создан и добавлен")
+                self.blocks.add(block)
+                self.all_sprites.add(block)
 
-                    elif obj['type'] == 'enemy':
-                        enemy = getattr(enemies, obj['class'])
+            elif obj['type'] == 'enemy':
+                enemy = getattr(enemies, obj['class'])
 
-                        if obj['behavior'] == None:
-                            enemy_obj = enemy(obj['x'], obj['y'], obj['color'])
+                if obj['behavior'] == None:
+                    enemy_obj = enemy(obj['x'], obj['y'], obj['color'])
 
-                        else:
-                            enemy_obj = enemy(obj['x'], obj['y'], obj['color'], obj['behavior'])
+                else:
+                    enemy_obj = enemy(obj['x'], obj['y'], obj['color'], obj['behavior'])
 
-                        enemy_obj.game = self.game  # Устанавливаем ссылку на игру
-                        self.enemies.add(enemy_obj)
-                        self.all_sprites.add(enemy_obj)
+                enemy_obj.game = self.game
 
-                    else:
-                        block = Block(obj['x'], obj['y'], obj['asset_name'], obj['image_path'])
-                        self.all_sprites.add(block)
-                        
-                except Exception as e:
-                    print(f"Ошибка при создании объекта {obj}: {e}")
-                    continue
-            self.player.blocks = self.blocks
-            print(f"Всего спрайтов: {len(self.all_sprites)}")
-            print(f"Всего блоков: {len(self.blocks)}")
-            print(f"Игрок существует: {self.player is not None}")
-                    
-        except Exception as e:
-            print(f"Ошибка загрузки уровня: {e}")
-            self.create_default_level()
+                self.enemies.add(enemy_obj)
+                self.all_sprites.add(enemy_obj)
+
+            elif obj['type'] == 'enviroment':
+                block = Block(obj['x'], obj['y'], obj['asset_name'], obj['image_path'])
+                self.all_sprites.add(block)
+
+            elif obj['type'] == 'powerup':
+                powerup = PowerUp(obj['x'], obj['y'], self, obj['color'], obj['class'])
+                self.blocks.add(powerup)
+                self.all_sprites.add(powerup)
+
+            elif obj['type'] == 'coin':
+                coin = Coin(obj['x'], obj['y'], self.player)
+                self.all_sprites.add(coin)
+
+            elif obj['type'] == 'finish':
+                block = Block(obj['x'], obj['y'], obj['asset_name'], obj['image_path'])
+                self.all_sprites.add(block)
+
+            elif obj['type'] == 'spawn':
+                self.player = Player(obj['x'], obj['y'])
+                block = Block(obj['x'], obj['y'], obj['asset_name'], obj['image_path'])
+                
+                self.all_sprites.add(block)
+                self.all_sprites.add(self.player)
+
+        self.player.blocks = self.blocks
 
     def create_default_level(self):
         print("Создание тестового уровня")
@@ -134,8 +130,7 @@ class Level:
             
             # Отрисовка всех спрайтов с учетом позиции камеры
             for sprite in self.all_sprites:
-                screen.blit(sprite.image, 
-                           (sprite.rect.x - int(self.camera_x), sprite.rect.y))
+                screen.blit(sprite.image, (sprite.rect.x - int(self.camera_x), sprite.rect.y - sprite.image.get_height()))
                            
             pygame.display.flip()
             

@@ -6,6 +6,7 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y, variant='default'):
         super().__init__()
         self.variant = variant
+        
         self.x = x
         self.y = y
         

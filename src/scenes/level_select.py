@@ -97,4 +97,5 @@ class LevelSelect:
 
             text_surface = self.font.render(text, True, color)
             text_rect = text_surface.get_rect(center=(WINDOW_WIDTH // 2, 200 + i * 50))
+
             screen.blit(text_surface, text_rect)

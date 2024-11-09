@@ -12,6 +12,16 @@ class Coin(pygame.sprite.Sprite):
         self.rect.y = y
         self.game = player
         self.animation_frame = 0
+
+
+    @staticmethod
+    def get_image():
+        return pygame.image.load('assets/images/items/coin/coin_spin_2.png')
+    
+
+    @staticmethod
+    def get_image_path():
+        return 'assets/images/items/coin/coin_spin_2.png'
         
 
     def load_sprites(self):
@@ -25,7 +35,7 @@ class Coin(pygame.sprite.Sprite):
         self.animate()
         
     def animate(self):
-        self.animation_frame = (self.animation_frame + 0.2) % len(self.sprites)
+        self.animation_frame = (self.animation_frame + 0.1) % len(self.sprites)
         self.image = self.sprites[int(self.animation_frame)]
         
     def collect(self, scoring_system):

@@ -6,6 +6,7 @@ from src.config import *
 from src.entities.player import Player
 from src.entities.block import Block
 from src.entities.powerup import PowerUp
+from src.entities.coin import Coin
 from src.entities import enemies
 
 class Level:
@@ -31,21 +32,8 @@ class Level:
             self.all_sprites.add(self.player)
 
     def load_level(self):
-        #try:
         for obj in self.level_data:
-        #try:
-            if obj['type'] == 'spawn':
-                self.player = Player(obj['x'], obj['y'])
-                block = Block(obj['x'], obj['y'], obj['asset_name'], obj['image_path'])
-
-                self.all_sprites.add(self.player)
-                self.all_sprites.add(block)
-
-            if obj['type'] == 'finish':
-                block = Block(obj['x'], obj['y'], obj['asset_name'], obj['image_path'])
-                self.all_sprites.add(block)
-                
-            elif obj['type'] == 'block':
+            if obj['type'] == 'block':
                 block = Block(obj['x'], obj['y'], obj['asset_name'], obj['image_path'])
 
                 self.blocks.add(block)
@@ -73,16 +61,23 @@ class Level:
                 powerup = PowerUp(obj['x'], obj['y'], self, obj['color'], obj['class'])
                 self.blocks.add(powerup)
                 self.all_sprites.add(powerup)
+
+            elif obj['type'] == 'coin':
+                coin = Coin(obj['x'], obj['y'], self.player)
+                self.all_sprites.add(coin)
+
+            elif obj['type'] == 'finish':
+                block = Block(obj['x'], obj['y'], obj['asset_name'], obj['image_path'])
+                self.all_sprites.add(block)
+
+            elif obj['type'] == 'spawn':
+                self.player = Player(obj['x'], obj['y'])
+                block = Block(obj['x'], obj['y'], obj['asset_name'], obj['image_path'])
                 
-        # except Exception as e:
-        #     print(f"Ошибка при создании объекта {obj}: {e}")
-        #     continue
+                self.all_sprites.add(block)
+                self.all_sprites.add(self.player)
 
         self.player.blocks = self.blocks
-                    
-        # except Exception as e:
-        #     print(f"Ошибка загрузки уровня: {e}")
-            #self.create_default_level()
 
     def create_default_level(self):
         print("Создание тестового уровня")
@@ -132,8 +127,7 @@ class Level:
             
             # Отрисовка всех спрайтов с учетом позиции камеры
             for sprite in self.all_sprites:
-                screen.blit(sprite.image, 
-                           (sprite.rect.x - int(self.camera_x), sprite.rect.y))
+                screen.blit(sprite.image, (sprite.rect.x - int(self.camera_x), sprite.rect.y - sprite.image.get_height()))
                            
             pygame.display.flip()
             

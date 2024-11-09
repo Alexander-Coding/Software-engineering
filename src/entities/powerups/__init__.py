@@ -6,14 +6,14 @@
 import sys
 import inspect
 
-# from .fireflower import FireFlower
-# from .mashroom import Mashroom
+from .fireflower import FireFlower
+from .mashroom import Mashroom
 from .star import Star
 
 
 __all__ = [
-    # 'FireFlower',
-    # 'Mashroom',
+    'FireFlower',
+    'Mashroom',
     'Star'
 ]
 

@@ -7,6 +7,7 @@ from src.config import *
 from src.scenes.menu import MainMenu
 from src.entities.enemies import get_all_enemies
 from src.entities.powerups import get_all_powerups
+from src.entities.coin import Coin
 from pygame.locals import *
 
 
@@ -95,6 +96,18 @@ class LevelEditor:
 
         
     def load_powerups(self):
+        self.tiles['coin'] = Coin.get_image()
+        button_rect = pygame.Rect(WINDOW_WIDTH - 180, len(self.asset_buttons) * 40 + 10, 160, 32)
+
+        self.asset_buttons.append({
+            'rect': button_rect, 
+            'name': 'coin',  
+            'type': 'coin', 
+            'class': 'Coin', 
+            'image_path': Coin.get_image_path(), 
+        })
+
+
         powerups = get_all_powerups()
 
         for powerup in powerups:
@@ -158,6 +171,7 @@ class LevelEditor:
                     self.mouse_held = True
                     
                     if self.save_button_rect.collidepoint(mouse_pos):
+                        self.mouse_held = False
                         self.showing_save_dialog = True
 
                     elif self.asset_list_rect.collidepoint(mouse_pos):

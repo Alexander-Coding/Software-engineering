@@ -1,6 +1,7 @@
 import pygame
 from src.config import *
 
+
 class GameOverMenu:
     def __init__(self, game):
         self.game = game
@@ -15,7 +16,7 @@ class GameOverMenu:
         # Загружаем фон
         self.background_image = pygame.image.load('assets/images/backgrounds/sky.png').convert_alpha()
         self.background_image = pygame.transform.scale(self.background_image, (WINDOW_WIDTH, WINDOW_HEIGHT))
-
+        self.sound_manager.play_music('Super_Mario')
         # Дополнительные атрибуты для подсветки кнопок
         self.hovered_button = None  # Индекс кнопки, над которой курсор мыши
         self.button_rects = []  # Прямоугольники кнопок для проверки нажатия
@@ -54,12 +55,12 @@ class GameOverMenu:
         pass
 
     def draw(self, screen):
-        self.sound_manager.play_music('Super_Mario')
         # Отрисовка фона
         screen.blit(self.background_image, (0, 0))
 
         # Отрисовка заголовка
-        title_text = self.font.render("Конец игры", True, WHITE)
+        title_font = pygame.font.Font(None, 60)
+        title_text = self.font.render("КОНЕЦ ИГРЫ", True, RED)
         title_rect = title_text.get_rect(center=(WINDOW_WIDTH // 2, 150))
         screen.blit(title_text, title_rect)
 
@@ -74,5 +75,5 @@ class GameOverMenu:
         self.game.change_scene(MainMenu(self.game))
 
     def restart_level(self):
-        self.game.current_scene.load_level()  # Перезагрузка уровня
+        self.game.current_scene.level()  # Перезагрузка уровня
         self.game.change_scene(self.game.current_scene)

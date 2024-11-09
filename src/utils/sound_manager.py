@@ -32,13 +32,20 @@ class SoundManager:
 
     def play_music(self, music_name):
         try:
-            pygame.mixer.music.load(f'assets/musics/{music_name}.mp3')
+            if not pygame.mixer.music.get_busy():  # Проверяем, играет ли музыка
+                pygame.mixer.music.load(f'assets/musics/{music_name}.mp3')
 
-            with open('settings.txt', 'r') as f:
-                music_volume, sound_volume = map(float, f.read().split(','))
-                self.music_volume = float(music_volume)
-            pygame.mixer.music.set_volume(self.music_volume)
-            pygame.mixer.music.play(-1)  # -1 для бесконечного повтора
+                with open('settings.txt', 'r') as f:
+                    music_volume, sound_volume = map(float, f.read().split(','))
+                    self.music_volume = float(music_volume)
+                pygame.mixer.music.set_volume(self.music_volume)
+                pygame.mixer.music.play(-1)  # -1 для бесконечного повтора
+            else:
+                pygame.mixer.music.fadeout(500)  # Плавное затухание текущей музыки (500 мс)
+                pygame.mixer.music.load(f'assets/musics/{music_name}.mp3')
+                pygame.mixer.music.set_volume(self.music_volume)
+                pygame.mixer.music.play(-1)
+
         except pygame.error:
             print(f"Не удалось загрузить музыку: {music_name}")
 

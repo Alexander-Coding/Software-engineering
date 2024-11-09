@@ -35,24 +35,21 @@ class Level:
             for obj in self.level_data:
                 try:
                     if obj['type'] == 'spawn':
-                        print(f"Создание игрока на позиции {obj['x']}, {obj['y']}")
                         self.player = Player(obj['x'], obj['y'])
-                        if not self.player:
-                            raise Exception("Не удалось создать игрока")
-                        
-                        print("Игрок создан успешно")
-                        self.all_sprites.add(self.player)
-                        print("Игрок добавлен в группу спрайтов")
+                        block = Block(obj['x'], obj['y'], obj['asset_name'], obj['image_path'])
 
+                        self.all_sprites.add(self.player)
+                        self.all_sprites.add(block)
+
+                    if obj['type'] == 'finish':
                         block = Block(obj['x'], obj['y'], obj['asset_name'], obj['image_path'])
                         self.all_sprites.add(block)
                         
                     elif obj['type'] == 'block':
-                        print(f"Создание блока на позиции {obj['x']}, {obj['y']}")
                         block = Block(obj['x'], obj['y'], obj['asset_name'], obj['image_path'])
+
                         self.blocks.add(block)
                         self.all_sprites.add(block)
-                        print("Блок создан и добавлен")
 
                     elif obj['type'] == 'enemy':
                         enemy = getattr(enemies, obj['class'])
@@ -63,25 +60,28 @@ class Level:
                         else:
                             enemy_obj = enemy(obj['x'], obj['y'], obj['color'], obj['behavior'])
 
-                        enemy_obj.game = self.game  # Устанавливаем ссылку на игру
+                        enemy_obj.game = self.game
+
                         self.enemies.add(enemy_obj)
                         self.all_sprites.add(enemy_obj)
 
-                    else:
+                    elif obj['type'] == 'enviroment':
+                        block = Block(obj['x'], obj['y'], obj['asset_name'], obj['image_path'])
+                        self.all_sprites.add(block)
+
+                    elif obj['type'] == 'item':
                         block = Block(obj['x'], obj['y'], obj['asset_name'], obj['image_path'])
                         self.all_sprites.add(block)
                         
                 except Exception as e:
                     print(f"Ошибка при создании объекта {obj}: {e}")
                     continue
+
             self.player.blocks = self.blocks
-            print(f"Всего спрайтов: {len(self.all_sprites)}")
-            print(f"Всего блоков: {len(self.blocks)}")
-            print(f"Игрок существует: {self.player is not None}")
                     
         except Exception as e:
             print(f"Ошибка загрузки уровня: {e}")
-            self.create_default_level()
+            #self.create_default_level()
 
     def create_default_level(self):
         print("Создание тестового уровня")

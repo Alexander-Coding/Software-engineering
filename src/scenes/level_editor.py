@@ -4,6 +4,7 @@ import os
 
 from pathlib import Path
 from src.config import *
+from src.scenes.menu import MainMenu
 from src.entities.enemies import get_all_enemies
 from pygame.locals import *
 
@@ -19,6 +20,7 @@ class LevelEditor:
         self.asset_list_rect = pygame.Rect(WINDOW_WIDTH - 200, 0, 200, WINDOW_HEIGHT)
         self.asset_buttons = []
         self.scroll_y = 0
+        self.mouse_held = False
         self.load_block_assets()
         self.load_enemies()
         
@@ -38,17 +40,8 @@ class LevelEditor:
         for asset_file in assets_path.rglob('*.png'):
             asset_name = asset_file.stem
             image = pygame.image.load(str(asset_file))
-            aspect_ratio = image.get_width() / image.get_height()
-
-            if aspect_ratio > 1:
-                new_width = self.grid_size
-                new_height = int(self.grid_size / aspect_ratio)
-
-            else:
-                new_width = int(self.grid_size * aspect_ratio)
-                new_height = self.grid_size
             
-            self.tiles[asset_name] = pygame.transform.scale(image, (new_width, new_height))
+            self.tiles[asset_name] = image
             button_rect = pygame.Rect(WINDOW_WIDTH - 180, len(self.asset_buttons) * 40 + 10, 160, 32)
 
             if asset_name == 'big_castle':
@@ -58,7 +51,14 @@ class LevelEditor:
                 self.asset_buttons.append({'rect': button_rect, 'name': asset_name,  'type': 'spawn', 'image_path': str(asset_file)})
 
             else:
-                self.asset_buttons.append({'rect': button_rect, 'name': asset_name,  'type': 'block', 'image_path': str(asset_file)})
+                if "enviroment" in str(asset_file) or "colors" in str(asset_file):
+                    self.asset_buttons.append({'rect': button_rect, 'name': asset_name,  'type': 'enviroment', 'image_path': str(asset_file)})
+
+                elif "flags" in str(asset_file):
+                    self.asset_buttons.append({'rect': button_rect, 'name': asset_name,  'type': 'flag', 'image_path': str(asset_file)})
+
+                else:
+                    self.asset_buttons.append({'rect': button_rect, 'name': asset_name,  'type': 'block', 'image_path': str(asset_file)})
 
 
     def load_enemies(self):
@@ -80,9 +80,20 @@ class LevelEditor:
 
             self.tiles[asset_name] = pygame.transform.scale(image, (new_width, new_height))
             button_rect = pygame.Rect(WINDOW_WIDTH - 180, len(self.asset_buttons) * 40 + 10, 160, 32)
-            self.asset_buttons.append({'rect': button_rect, 'name': asset_name,  'type': 'enemy', 
-                                       'class': enemy['class'], 'color': enemy['color'], 
-                                       'image_path': enemy['image_path'], 'behavior': enemy['behavior']})
+
+            self.asset_buttons.append({
+                'rect': button_rect, 
+                'name': asset_name,  
+                'type': 'enemy', 
+                'class': enemy['class'], 
+                'color': enemy['color'], 
+                'image_path': enemy['image_path'], 
+                'behavior': enemy['behavior']
+            })
+
+        
+    def load_items(self):
+        pass
 
 
     def handle_event(self, event):
@@ -91,12 +102,15 @@ class LevelEditor:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_BACKSPACE:
                     self.level_name = self.level_name[:-1]
+
                 elif event.key == pygame.K_RETURN:
                     self.save_level(self.level_name)
                     self.showing_save_dialog = False
                     self.level_name = ""
+
                 else:
                     self.level_name += event.unicode
+
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 # Проверка нажатия на область диалога для закрытия
                 if not self.dialog_rect.collidepoint(event.pos):
@@ -105,40 +119,55 @@ class LevelEditor:
         else:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
+                grid_x = (mouse_pos[0] + self.camera_x) // self.grid_size
+                grid_y = (mouse_pos[1] // self.grid_size) + 1
+                
+                if event.button == 3:  # ПКМ
+                    # Проверка на наличие ассета по координатам и его удаление
+                    self.level_data = [tile for tile in self.level_data if not (tile['x'] == grid_x * self.grid_size and tile['y'] == grid_y * self.grid_size)]
+                
+                elif event.button == 1:  # ЛКМ
+                    self.mouse_held = True
+                    
+                    if self.save_button_rect.collidepoint(mouse_pos):
+                        self.showing_save_dialog = True
 
-                if self.save_button_rect.collidepoint(mouse_pos):
-                    # Нажатие на кнопку сохранения
-                    self.showing_save_dialog = True
+                    elif self.asset_list_rect.collidepoint(mouse_pos):
+                        adjusted_y = mouse_pos[1] + self.scroll_y
 
-                elif self.asset_list_rect.collidepoint(mouse_pos):
-                    adjusted_y = mouse_pos[1] + self.scroll_y
+                        for button in self.asset_buttons:
+                            if button['rect'].collidepoint(mouse_pos[0], adjusted_y):
+                                self.current_tile = button
+                                break
+                            
+                    else:
+                        if self.current_tile:
+                            self.place_tile()
 
-                    for button in self.asset_buttons:
-                        if button['rect'].collidepoint(mouse_pos[0], adjusted_y):
-                            self.current_tile = button
-                            break
-                else:
-                    if self.current_tile:
-                        self.place_tile()
-
+            elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                self.mouse_held = False
+            
             elif event.type == pygame.MOUSEWHEEL:
-                self.scroll_y = max(0, min(self.scroll_y - event.y * 20, 
-                    max(0, len(self.asset_buttons) * 40 - WINDOW_HEIGHT)))
+                self.scroll_y = max(0, min(self.scroll_y - event.y * 20,
+                                           max(0, len(self.asset_buttons) * 40 - WINDOW_HEIGHT)))
+                
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            self.game.change_scene(MainMenu(self.game))
 
 
     def place_tile(self):
         mouse_pos = pygame.mouse.get_pos()
         grid_x = (mouse_pos[0] + self.camera_x) // self.grid_size
-        grid_y = mouse_pos[1] // self.grid_size
+        grid_y = (mouse_pos[1] // self.grid_size) + 1
 
         if self.current_tile['type'] == 'enemy':
             tile_data = {
                 'asset_name': self.current_tile['name'],
                 'image_path': self.current_tile['image_path'],
-                'type': self.current_tile['type'],
-                'class': self.current_tile['class'],
-                'color': self.current_tile['color'],
-                'behavior': self.current_tile['behavior'],
+                'type':       self.current_tile['type'],
+                'class':      self.current_tile['class'],
+                'color':      self.current_tile['color'],
+                'behavior':   self.current_tile['behavior'],
                 'x': grid_x * self.grid_size,
                 'y': grid_y * self.grid_size
             }
@@ -146,21 +175,21 @@ class LevelEditor:
             tile_data = {
                 'asset_name': self.current_tile['name'],
                 'image_path': self.current_tile['image_path'],
-                'type': self.current_tile['type'],
+                'type':       self.current_tile['type'],
                 'x': grid_x * self.grid_size,
                 'y': grid_y * self.grid_size
             }
-        
-        self.level_data.append(tile_data)
+
+        if tile_data not in self.level_data:
+            self.level_data.append(tile_data)
         
 
     def save_level(self, name):
         os.makedirs('levels', exist_ok=True)
-        filename = f'levels/level_{name}.json'
+        filename = f'levels/{name}.json'
         
         with open(filename, 'w') as f:
             json.dump(self.level_data, f)
-        print(f"Уровень сохранен как {filename}")
 
 
     def update(self):
@@ -171,6 +200,9 @@ class LevelEditor:
 
         if keys[pygame.K_RIGHT]:
             self.camera_x += 5
+
+        if self.mouse_held and self.current_tile:
+            self.place_tile()
             
 
     def draw(self, screen):
@@ -187,19 +219,24 @@ class LevelEditor:
                            (WINDOW_WIDTH, y))
             
         for tile in self.level_data:
-            screen.blit(self.tiles[tile['asset_name']], 
-                       (tile['x'] - self.camera_x, tile['y']))
+            tile_image = self.tiles[tile['asset_name']]
+            screen.blit(tile_image, (tile['x'] - self.camera_x, tile['y'] - tile_image.get_height()))
             
         pygame.draw.rect(screen, (200, 200, 200), self.asset_list_rect)
         
         for button in self.asset_buttons:
             button_rect = button['rect'].copy()
             button_rect.y -= self.scroll_y
+
             if self.asset_list_rect.contains(button_rect):
-                color = (150, 150, 150) if button['name'] == self.current_tile else (220, 220, 220)
+                if self.current_tile and button['name'] == self.current_tile['name']:
+                    color = (100, 100, 250)  # Синий цвет для выделенной кнопки
+                else:
+                    color = (150, 150, 150)  # Обычный цвет для кнопок
+
                 pygame.draw.rect(screen, color, button_rect)
-                screen.blit(self.tiles[button['name']], 
-                          (button_rect.x + 5, button_rect.y + 2))
+                image = pygame.transform.scale(self.tiles[button['name']], (32, 32))
+                screen.blit(image, (button_rect.x + 5, button_rect.y + 2))
                 font = pygame.font.Font(None, 20)
                 text = font.render(button['name'], True, (0, 0, 0))
                 screen.blit(text, (button_rect.x + 40, button_rect.y + 8))

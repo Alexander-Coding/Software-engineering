@@ -11,6 +11,11 @@ class Star(pygame.sprite.Sprite):
         self.variant = variant
         self.load_sprites()
 
+        # Анимация появления
+        self.emerging = True
+        self.emerge_height = 32
+        self.initial_y = y
+
 
     @classmethod
     def get_variants(cls):
@@ -57,4 +62,18 @@ class Star(pygame.sprite.Sprite):
         self.image = self.sprites[self.variant][0]
         self.rect = self.image.get_rect()
         self.rect.x = self.x
-        self.rect.y = self.y - 32
+        self.rect.y = self.y
+
+    
+    def update(self):
+        if self.emerging:
+             self.emerge()
+
+
+    def emerge(self):
+        if self.rect.y > self.initial_y - self.emerge_height:
+            self.rect.y -= 1
+        else:
+            self.emerging = False
+            self.active = True
+    

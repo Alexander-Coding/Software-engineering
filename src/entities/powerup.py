@@ -1,6 +1,5 @@
 import pygame
 import pygame.locals
-import time
 from src.config import *
 from src.entities import powerups
 from src.utils.animation import AnimationController
@@ -23,11 +22,6 @@ class PowerUp(pygame.sprite.Sprite):
         self.velocity_x = 2
         self.velocity_y = 0
         self.active = False
-        
-        # Анимация появления
-        self.emerging = True
-        self.emerge_height = 32
-        self.initial_y = y
 
         self.load_brick_sprite()
         self.block_hit()
@@ -38,6 +32,7 @@ class PowerUp(pygame.sprite.Sprite):
     
 
     def block_hit(self):
+        self.scene.game.sound_manager.play_sound('block_hit')
         powerup_obj = getattr(powerups, self.powerup_type)
         self.scene.all_sprites.add(powerup_obj(self.rect.x, self.rect.y, self.scene.player, self.scene.game, self.variant))
 
@@ -79,10 +74,13 @@ class PowerUp(pygame.sprite.Sprite):
         if self.powerup_type == 'mushroom':
             if not player.is_big:
                 player.grow()
+
         elif self.powerup_type == 'flower':
             player.get_fire_power()
+
         elif self.powerup_type == 'star':
             player.make_invincible()
+
         elif self.powerup_type == '1up':
             player.add_life()
             

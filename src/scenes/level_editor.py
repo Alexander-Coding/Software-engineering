@@ -6,6 +6,7 @@ from pathlib import Path
 from src.config import *
 from src.scenes.menu import MainMenu
 from src.entities.enemies import get_all_enemies
+from src.entities.powerups import get_all_powerups
 from pygame.locals import *
 
 
@@ -23,6 +24,7 @@ class LevelEditor:
         self.mouse_held = False
         self.load_block_assets()
         self.load_enemies()
+        self.load_powerups()
         
         # Кнопка сохранения уровня
         self.save_button_rect = pygame.Rect(10, WINDOW_HEIGHT - 50, 100, 40)
@@ -92,8 +94,34 @@ class LevelEditor:
             })
 
         
-    def load_items(self):
-        pass
+    def load_powerups(self):
+        powerups = get_all_powerups()
+
+        for powerup in powerups:
+            asset_name = powerup['item_name']
+            image = pygame.image.load(str(powerup['image_path']))
+
+            aspect_ratio = image.get_width() / image.get_height()
+
+            if aspect_ratio > 1:
+                new_width = self.grid_size
+                new_height = int(self.grid_size / aspect_ratio)
+
+            else:
+                new_width = int(self.grid_size * aspect_ratio)
+                new_height = self.grid_size
+
+            self.tiles[asset_name] = pygame.transform.scale(image, (new_width, new_height))
+            button_rect = pygame.Rect(WINDOW_WIDTH - 180, len(self.asset_buttons) * 40 + 10, 160, 32)
+
+            self.asset_buttons.append({
+                'rect': button_rect, 
+                'name': asset_name,  
+                'type': 'powerup', 
+                'class': powerup['class'], 
+                'color': powerup['color'], 
+                'image_path': powerup['image_path'], 
+            })
 
 
     def handle_event(self, event):
@@ -171,6 +199,18 @@ class LevelEditor:
                 'x': grid_x * self.grid_size,
                 'y': grid_y * self.grid_size
             }
+
+        elif self.current_tile['type'] == 'powerup':
+            tile_data = {
+                'asset_name': self.current_tile['name'],
+                'image_path': self.current_tile['image_path'],
+                'type':       self.current_tile['type'],
+                'class':      self.current_tile['class'],
+                'color':      self.current_tile['color'],
+                'x': grid_x * self.grid_size,
+                'y': grid_y * self.grid_size
+            }
+
         else:
             tile_data = {
                 'asset_name': self.current_tile['name'],

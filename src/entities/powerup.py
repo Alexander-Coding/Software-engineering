@@ -1,15 +1,20 @@
 import pygame
+import pygame.locals
+import time
 from src.config import *
+from src.entities import powerups
 from src.utils.animation import AnimationController
 
+
 class PowerUp(pygame.sprite.Sprite):
-    def __init__(self, x, y, powerup_type='mushroom'):
+    def __init__(self, x, y, scene, variant, powerup_type='Mushroom'):
         super().__init__()
+        self.scene = scene
+        self.variant = variant
         self.powerup_type = powerup_type
         self.animation_controller = AnimationController()
-        self.load_sprites()
-        
-        self.image = self.sprites[self.powerup_type][0]
+
+        self.image = self.load_brick_sprite()
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -23,32 +28,28 @@ class PowerUp(pygame.sprite.Sprite):
         self.emerging = True
         self.emerge_height = 32
         self.initial_y = y
-        
-    def load_sprites(self):
-        self.sprites = {
-            'mushroom': [],  # Спрайты гриба
-            'flower': [],    # Спрайты цветка
-            'star': [],      # Спрайты звезды
-            '1up': []        # Спрайты доп. жизни
-        }
-        
-        # Загрузка анимаций для разных типов бонусов
-        for powerup_type in self.sprites:
-            if powerup_type == 'star':
-                self.animation_controller.add_animation(
-                    powerup_type,
-                    self.sprites[powerup_type],
-                    frame_duration=0.1,
-                    loop=True
-                )
-                
+
+        self.load_brick_sprite()
+        self.block_hit()
+
+    
+    def load_brick_sprite(self):
+        return pygame.image.load('assets/images/blocks/bricks/brick.png')
+    
+
+    def block_hit(self):
+        powerup_obj = getattr(powerups, self.powerup_type)
+        self.scene.all_sprites.add(powerup_obj(self.rect.x, self.rect.y, self.scene.player, self.scene.game, self.variant))
+
+
     def update(self):
-        if self.emerging:
-            self.emerge()
-        else:
-            self.move()
-            self.apply_gravity()
-            self.animate()
+        # if self.emerging:
+        #     self.emerge()
+        # else:
+        #     self.move()
+        #     self.apply_gravity()
+        #     self.animate()
+        pass
             
     def emerge(self):
         if self.rect.y > self.initial_y - self.emerge_height:
@@ -95,44 +96,3 @@ class PowerUp(pygame.sprite.Sprite):
         
         # Удаление бонуса
         self.kill()
-
-class Mushroom(PowerUp):
-    def __init__(self, x, y):
-        super().__init__(x, y, 'mushroom')
-
-class FireFlower(PowerUp):
-    def __init__(self, x, y):
-        super().__init__(x, y, 'flower')
-        
-    def update(self):
-        if self.emerging:
-            self.emerge()
-        else:
-            self.animate()
-            # Цветок не двигается после появления
-
-class Star(PowerUp):
-    def __init__(self, x, y):
-        super().__init__(x, y, 'star')
-        self.bounce_power = -8
-        
-    def update(self):
-        if self.emerging:
-            self.emerge()
-        else:
-            self.move()
-            self.apply_gravity()
-            self.animate()
-            
-            # Звезда отскакивает при приземлении
-            if self.velocity_y > 0:  # Падение
-                self.check_bounce()
-                
-    def check_bounce(self):
-        # Проверка столкновения с блоками
-        if pygame.sprite.spritecollide(self, self.game.blocks, False):
-            self.velocity_y = self.bounce_power
-
-class OneUp(PowerUp):
-    def __init__(self, x, y):
-        super().__init__(x, y, '1up')

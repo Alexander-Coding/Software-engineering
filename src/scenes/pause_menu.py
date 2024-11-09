@@ -5,8 +5,9 @@ from src.utils import SaveSystem
 
 
 class PauseMenu:
-    def __init__(self, game):
+    def __init__(self, game, level):
         self.game = game
+        self.level = level
         self.sound_manager = self.game.sound_manager
         self.buttons = [
             {'text': 'Главное меню', 'action': self.go_to_main_menu},
@@ -78,10 +79,10 @@ class PauseMenu:
         self.game.change_scene(MainMenu(self.game))
 
     def restart_level(self):
-        self.game.current_scene.reset_level()
-        self.game.change_scene(self.game.current_scene)
+        self.level.load_level()
+        self.game.change_scene(self.level)
 
     def resume_game(self):
         self.game.is_paused = False
-        self.game.change_scene(self.game.current_scene)  # Возвращаемся к текущей игре
+        self.game.change_scene(self.level)  # Возвращаемся к текущей игре
 

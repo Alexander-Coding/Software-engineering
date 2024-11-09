@@ -35,6 +35,11 @@ class Level:
             self.all_sprites.add(self.player)
 
     def load_level(self):
+        self.all_sprites = pygame.sprite.Group()
+        self.blocks = pygame.sprite.Group()
+        self.enemies = pygame.sprite.Group()
+        self.player = None
+
         for obj in self.level_data:
             if obj['type'] == 'block':
                 block = Block(obj['x'], obj['y'], obj['asset_name'], obj['image_path'])
@@ -147,7 +152,7 @@ class Level:
                 
     def pause_game(self):
         self.game.is_paused = True
-        self.game.change_scene(PauseMenu(self.game))
+        self.game.change_scene(PauseMenu(self.game, self))
 
 
     # def reset_level(self):

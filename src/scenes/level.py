@@ -6,6 +6,8 @@ from src.config import *
 from src.entities.player import Player
 from src.entities.block import Block
 from src.entities import enemies
+from src.scenes.pause_menu import PauseMenu
+
 
 class Level:
     def __init__(self, game, level_id, level_data):
@@ -14,6 +16,7 @@ class Level:
         self.level_id = level_id
         self.camera_x = 0
         self.level_data = level_data
+        self.sound_manager = self.game.sound_manager
         # Инициализация групп спрайтов
         self.all_sprites = pygame.sprite.Group()
         self.blocks = pygame.sprite.Group()
@@ -143,14 +146,22 @@ class Level:
         print(f"Обработка события в уровне: {event}")  # Отладка
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
-                from src.scenes.menu import MainMenu
-                self.game.change_scene(MainMenu(self.game))
+               self.pause_game()
             elif self.player:
                 self.player.handle_movement()
                 
     def pause_game(self):
         self.game.is_paused = True
-        # Показать меню паузы
+        self.game.change_scene(PauseMenu(self.game))
+
+
+    # def reset_level(self):
+    #     self.load_level()
+    #     self.player.reset()
+    #     self.enemies.empty()
+    #     self.coins = 0
+    #     self.game.game_state.save_data['coins'] = 0
+    #     SaveSystem.save_game(self.game.game_state.save_data)
 
     def handle_collisions(self):
         # Коллизии с врагами
@@ -170,5 +181,6 @@ class Level:
                 self.game_over()
                 
     def game_over(self):
+        self.sound_manager.play_misic('death')
         # Показать экран game over
         pass

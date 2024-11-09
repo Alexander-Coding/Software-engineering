@@ -15,6 +15,13 @@ class LevelSelect:
         self.background_image = pygame.image.load('assets/images/backgrounds/level_selected.png').convert_alpha()
         self.background_image = pygame.transform.scale(self.background_image, (WINDOW_WIDTH, WINDOW_HEIGHT))
 
+        # Создаем прямоугольники для каждого уровня
+        self.level_rects = []
+        for i, level in enumerate(self.levels):
+            text_surface = self.font.render(f"{level['name']} - {level['status']}", True, WHITE)
+            text_rect = text_surface.get_rect(center=(WINDOW_WIDTH // 2, 200 + i * 50))
+            self.level_rects.append(text_rect)
+
     def get_available_levels(self):
         completed_levels = self.game.game_state.save_data['completed_levels']
         levels = []
@@ -53,6 +60,19 @@ class LevelSelect:
             elif event.key == pygame.K_ESCAPE:
                 from src.scenes.menu import MainMenu
                 self.game.change_scene(MainMenu(self.game))
+
+        if event.type == pygame.MOUSEMOTION:
+            for i, rect in enumerate(self.level_rects):
+                if rect.collidepoint(event.pos):
+                    self.selected_level = i
+                    break
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                for i, rect in enumerate(self.level_rects):
+                    if rect.collidepoint(event.pos) and not self.levels[i]['locked']:  # Проверка блокировки
+                        self.start_level()
+                        break
 
     def start_level(self):
         level = self.levels[self.selected_level]

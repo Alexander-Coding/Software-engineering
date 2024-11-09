@@ -19,9 +19,7 @@ class SaveSystem:
             return {
                 'completed_levels': [],
                 'score': 0,
-                'coins': 0,
-                'unlocked_skins': ['default'],
-                'current_skin': 'default'
+                'coins': 0
             }
         
         try:

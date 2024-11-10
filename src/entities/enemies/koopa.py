@@ -1,6 +1,7 @@
 import math
 import pygame
 from src.entities.enemy import Enemy
+from src.config import *
 
 
 class Koopa(Enemy):
@@ -11,21 +12,26 @@ class Koopa(Enemy):
         """
         super().__init__(x, y, variant)
         self.behavior = behavior
-        self.velocity_x = 2
+        self.velocity_x = 0.5
         self.animation_speed = 0.15
         self.direction = -1
         
         # Параметры поведения
         self.is_shell_mode = behavior == 'shell'
-        self.shell_speed = 8
+        self.shell_speed = 10
         self.flying_height = 100  # Высота полета для летающих Koopa
         self.initial_y = y
         self.fly_offset = 0
-        
+
         # Состояния
         self.is_kicked = False
         self.wake_up_timer = 0
         self.wake_up_delay = 5000  # 5 секунд до выхода из панциря
+
+        # Тайминг
+        self.reverse_interval = 500
+        self.attack_time = pygame.time.get_ticks()
+        self.last_reverse_time = pygame.time.get_ticks()
 
         self.enemy_name = f'koopa_{variant}_{behavior}'
 
@@ -72,7 +78,6 @@ class Koopa(Enemy):
                 'behavior': 'flying'
             }
         ]
-        
 
     def load_sprites(self):
         sprite_paths = {
@@ -158,17 +163,33 @@ class Koopa(Enemy):
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
-        
 
     def update(self):
-        if self.is_shell_mode:
-            self.update_shell_state()
-
-        else:
+        self.take_damage()
+        self.update_shell_state()
+        if not self.is_shell_mode:
             self.update_normal_state()
-
+            self.attack()
         super().update()
-        
+
+    def attack(self):
+        if self.curren - self.attack_time >= self.reverse_interval:
+            if self.rect.colliderect(self.player.rect.move(1, 0)) or self.rect.colliderect(self.player.rect.move(-1, 0)):
+                self.player.Death()
+
+    def handle_collision(self):
+        for block in self.blocks:
+            if block.rect.colliderect(self.rect.move(0, 1)):
+                return True
+        return False
+
+    def take_damage(self):
+        self.curren = pygame.time.get_ticks()
+            # Проверка на столкновение с верхней частью черепахи
+        if self.rect.colliderect(self.player.rect.move(0, 1)):
+            if self.curren - self.attack_time >= self.reverse_interval:
+                self.attack_time = pygame.time.get_ticks()
+                self.stomp()
 
     def update_normal_state(self):
         if self.behavior == 'flying':
@@ -181,32 +202,62 @@ class Koopa(Enemy):
         # Отражаем спрайт если движемся вправо
         if self.direction == 1:
             self.image = pygame.transform.flip(self.image, True, False)
-            
 
     def update_shell_state(self):
         current_time = pygame.time.get_ticks()
-        
-        if self.is_kicked:
-            self.current_animation = 'shell'
-        else:
+
+        if self.is_shell_mode:
             if current_time - self.wake_up_timer > self.wake_up_delay:
                 self.current_animation = 'shell_wake'
 
                 if self.animation_frame >= len(self.sprites['shell_wake']) - 1:
                     self.exit_shell()
-            else:
-                self.current_animation = 'shell'
-                
 
     def walk_movement(self):
+        self.velocity_x = 1
+        self.current_time = pygame.time.get_ticks()
+        for block in self.blocks:
+            if block.rect.colliderect(self.rect.move(self.velocity_x, 0)):
+                self.velocity_x = 0
+                if self.current_time - self.last_reverse_time >= self.reverse_interval:
+                    self.reverse_direction()
+                    self.last_reverse_time = self.current_time
+                    self.velocity_x = 1
+            if block.rect.colliderect(self.rect.move(0, self.velocity_y)):
+                if self.velocity_y > 0:  # Падение
+                    self.rect.bottom = block.rect.top  # Устанавливаем игрока на верх блока
+                    self.velocity_y = 0
+                    self.on_ground = True  # Игрок на земле
+                elif self.velocity_y < 0:  # Подъем (прыжок)
+                    self.rect.top = block.rect.bottom  # Устанавливаем игрока на низ блока
+                    self.velocity_y = 0
+        if not self.handle_collision():
+            self.on_ground = False
         self.rect.x += self.velocity_x * self.direction
-        
+        self.rect.y += self.velocity_y
 
     def fly_movement(self):
         self.fly_offset += 0.05
-        self.rect.x += self.velocity_x * self.direction
-        self.rect.y = self.initial_y + math.sin(self.fly_offset) * self.flying_height
-        
+        self.velocity_x = 1
+        self.current_time = pygame.time.get_ticks()
+
+        self.velocity_y = math.sin(self.fly_offset) * 0.5
+        new_y_position = self.initial_y + self.velocity_y * self.flying_height
+
+        collision_y = False
+
+        for block in self.blocks:
+            # if block.rect.colliderect(self.rect.move(self.velocity_x, 0)):
+            #     self.velocity_x = 0
+            #     if self.current_time - self.last_reverse_time >= self.reverse_interval:
+            #         self.reverse_direction()
+            #         self.last_reverse_time = self.current_time
+            #         self.velocity_x = 1
+            if block.rect.colliderect(self.rect.move(0, new_y_position - self.rect.y)):
+                collision_y = True  # Отмечаем, что произошло столкновение по Y
+        if not collision_y:
+            self.rect.y = new_y_position
+        # self.rect.x += self.velocity_x * self.direction
 
     def enter_shell(self):
         self.is_shell_mode = True
@@ -214,41 +265,42 @@ class Koopa(Enemy):
         self.current_animation = 'shell'
         self.velocity_x = 0
         self.wake_up_timer = pygame.time.get_ticks()
-        
 
     def exit_shell(self):
         self.is_shell_mode = False
         self.behavior = 'walking'
         self.is_kicked = False
         self.velocity_x = 2
-        
+        self.on_ground = False
 
     def kick_shell(self, direction):
         if self.is_shell_mode:
-            self.is_kicked = True
-            self.velocity_x = self.shell_speed
-            self.direction = direction
-            self.wake_up_timer = pygame.time.get_ticks()  # Сбрасываем таймер
-            
+            self.curren = pygame.time.get_ticks()
+            # Проверка на столкновение с игроком
+            if self.rect.colliderect(self.player.rect.move(1, 0)) or self.rect.colliderect(
+                    self.player.rect.move(-1, 0) or self.is_kicked):
+                # Проверка времени для атаки
+                if self.curren - self.attack_time >= self.reverse_interval:
+                    self.attack_time = pygame.time.get_ticks()  # Сбрасываем таймер атаки
+                    self.is_kicked = True
+
+                    # Устанавливаем скорость и направление движения черепахи
+                    self.velocity_x = (self.shell_speed+40) * direction
+
+                    # Обновляем направление черепахи
+                    self.direction = direction
+
+                    # Сбрасываем таймер пробуждения
+                    self.wake_up_timer = pygame.time.get_ticks()
 
     def stomp(self):
-        """Вызывается когда игрок прыгает на Koopa"""
-        if not self.is_shell_mode:
-            self.enter_shell()
-
-        elif not self.is_kicked:
-            self.kick_shell(1 if self.rect.x < self.get_player_position()[0] else -1)
-            
-
-    def check_collisions(self):
-        # Проверка столкновений с блоками
-        blocks_hit = pygame.sprite.spritecollide(self, self.game.current_scene.blocks, False)
-
-        for block in blocks_hit:
-            if self.velocity_x > 0:
-                self.rect.right = block.rect.left
-                self.reverse_direction()
-
-            elif self.velocity_x < 0:
-                self.rect.left = block.rect.right
-                self.reverse_direction()
+        if self.behavior == "flying":
+            self.behavior = "walking"
+            self.player.kill_enemy()
+        else:
+            if not self.is_shell_mode:
+                self.enter_shell()
+                self.player.kill_enemy()
+            else:
+                if not self.is_kicked:
+                    self.kick_shell(1 if self.rect.x < self.get_player_position()[0] else -1)

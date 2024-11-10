@@ -3,8 +3,10 @@ from src.config import *
 
 
 class Block(pygame.sprite.Sprite):
-    def __init__(self, x, y, block_type, image_path):
+    def __init__(self, x, y, block_type, image_path, player, game):
         super().__init__()
+        self.game = game
+        self.player = player
         self.block_type = block_type
         self.image_path = image_path
         self.image = self.load_sprite()
@@ -13,7 +15,7 @@ class Block(pygame.sprite.Sprite):
         self.rect.y = y
         
         self.has_coin = block_type == 'question'
-        self.is_broken = False
+        self.is_broken = 'brick' in str(self.image_path)
         
     def load_sprite(self):
         return pygame.image.load(str(self.image_path))

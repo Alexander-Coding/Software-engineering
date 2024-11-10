@@ -4,8 +4,7 @@ from src.entities.block import Block
 
 class FinishBlock(Block):
     def __init__(self, x, y, block_type, image_path, player, game, level):
-        super().__init__(x, y, block_type, image_path)
-        self.player = player
+        super().__init__(x, y, block_type, image_path, player, game)
         self.game = game
         self.level = level
 

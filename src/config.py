@@ -12,10 +12,10 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
 # Настройки игрока
-PLAYER_SPEED = 5
+PLAYER_SPEED = 250
 PLAYER_JUMP_POWER = 5
-MAX_FALL_SPEED = 5
-GRAVITY = 0.8
+MAX_FALL_SPEED = 15
+GRAVITY = 10
 
 # Пути к файлам
 SAVE_FILE = "save_data.json"

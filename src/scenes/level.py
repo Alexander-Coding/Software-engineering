@@ -32,11 +32,7 @@ class Level:
 
     def load_level(self):
         try:
-            with open(f'levels\level_{self.level_id}.json', 'r') as f:
-                level_data = json.load(f)
-                print(f"Данные уровня загружены: {level_data}")
-                
-            for obj in level_data:
+            for obj in self.level_data:
                 try:
                     if obj['type'] == 'spawn':
                         print(f"Создание игрока на позиции {obj['x']}, {obj['y']}")
@@ -68,6 +64,7 @@ class Level:
                             enemy_obj = enemy(obj['x'], obj['y'], obj['color'], obj['behavior'])
 
                         enemy_obj.game = self.game  # Устанавливаем ссылку на игру
+                        enemy_obj.player = self.player
                         self.enemies.add(enemy_obj)
                         self.all_sprites.add(enemy_obj)
 
@@ -79,6 +76,9 @@ class Level:
                     print(f"Ошибка при создании объекта {obj}: {e}")
                     continue
             self.player.blocks = self.blocks
+            self.player.game = self.game
+            for i in self.enemies:
+                i.blocks = self.blocks
             print(f"Всего спрайтов: {len(self.all_sprites)}")
             print(f"Всего блоков: {len(self.blocks)}")
             print(f"Игрок существует: {self.player is not None}")
@@ -124,8 +124,16 @@ class Level:
     def update_camera(self):
         try:
             if self.player:
+                # Получаем текущую позицию камеры
+                current_camera_x = self.camera_x
+
+                # Вычисляем целевую позицию по оси X
                 target_x = self.player.rect.centerx - WINDOW_WIDTH // 2
-                self.camera_x += (target_x - self.camera_x) * 0.1
+
+                # Обновляем камеру только если игрок движется вправо
+                if target_x > current_camera_x:
+                    self.camera_x += (target_x - current_camera_x) * 0.1
+                    self.player.leftside = self.camera_x
         except Exception as e:
             print(f"Ошибка при обновлении камеры: {e}")
 

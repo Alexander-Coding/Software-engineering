@@ -15,9 +15,9 @@ class Game:
         self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
-        self.sound_manager = SoundManager()
-        self.sound_manager.play_music('Super_Mario')
         self.game_state = GameState()
+        self.sound_manager = SoundManager(self)
+        self.sound_manager.play_music('Super_Mario')
         self.current_scene = MainMenu(self)
         
     def run(self):

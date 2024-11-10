@@ -22,7 +22,9 @@ class SaveSystem:
                 'completed_levels': [],
                 'score': 0,
                 'live': 3,
-                'coins': 0
+                'coins': 0,
+                'sound_volume': 0,
+                'music_volume': 0
             }
 
             with open(SAVE_FILE, 'w') as f:

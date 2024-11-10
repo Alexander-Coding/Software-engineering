@@ -3,7 +3,8 @@ from src.config import *
 
 
 class SoundManager:
-    def __init__(self):
+    def __init__(self, game):
+        self.game = game
         self.sounds = {}
         self.music_volume = 1.0
         self.sound_volume = 1.0
@@ -21,14 +22,13 @@ class SoundManager:
 
         try:
             sound = pygame.mixer.Sound(f'assets/musics/{sound_files[sound_name]}')
-            with open('settings.txt', 'r') as f:
-                music_volume, sound_volume = map(float, f.read().split(','))
-                self.sound_volume = float(sound_volume)
-                # Устанавливаем громкость звука
+            self.sound_volume = self.game.game_state.sound_volume
             self.sounds[sound_name] = sound
             self.sounds[sound_name].set_volume(self.sound_volume)
+
         except pygame.error:
             print(f"Не удалось загрузить звук: {sound_name}")
+
         self.sounds[sound_name].play()
 
     def play_music(self, music_name):
@@ -36,9 +36,8 @@ class SoundManager:
             if not pygame.mixer.music.get_busy():  # Проверяем, играет ли музыка
                 pygame.mixer.music.load(f'assets/musics/{music_name}.mp3')
 
-                with open('settings.txt', 'r') as f:
-                    music_volume, sound_volume = map(float, f.read().split(','))
-                    self.music_volume = float(music_volume)
+                self.music_volume = self.game.game_state.music_volume
+
                 pygame.mixer.music.set_volume(self.music_volume)
                 pygame.mixer.music.play(-1)  # -1 для бесконечного повтора
             else:

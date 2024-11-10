@@ -11,7 +11,11 @@ class Player(pygame.sprite.Sprite):
 
         self.load_sprites()
         self.image = self.sprites['idle'][0]
-        self.image = pygame.transform.scale(self.image, (24, 32))
+        new_surface = pygame.Surface((self.image.get_width() - 12, self.image.get_height()))
+        new_surface.blit(self.image, (0, 0), (0, 0, self.image.get_width() - 12, self.image.get_height()))
+
+        # Заменяем исходное изображение
+        self.image = new_surface
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -30,8 +34,8 @@ class Player(pygame.sprite.Sprite):
 
         # Переменные измерений
         self.PLAYER_SPEED = 180
-        self.PLAYER_JUMP_POWER = 6
-        self.GRAVITY = 10
+        self.PLAYER_JUMP_POWER = 8
+        self.GRAVITY = 15
 
         self.is_big = False  # Флаг для отслеживания размера игрока
 
@@ -99,7 +103,7 @@ class Player(pygame.sprite.Sprite):
                     self.rect.top = block.rect.bottom  # Устанавливаем игрока на низ блока
                     self.velocity_y = 0
                     block.break_block()
-                    
+
         if not self.handle_collision():
             self.on_ground = False
 

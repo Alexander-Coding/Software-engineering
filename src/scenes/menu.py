@@ -7,7 +7,7 @@ class MainMenu:
         self.sound_manager = self.game.sound_manager
         self.buttons = [
             {'text': 'Играть', 'action': self.start_game},
-            {'text': 'Редактор уровней', 'action': self.open_editor},
+               {'text': 'Редактор уровней', 'action': self.open_editor},
             {'text': 'Настройки', 'action': self.open_settings},
             {'text': 'Выход', 'action': self.game.quit}
         ]

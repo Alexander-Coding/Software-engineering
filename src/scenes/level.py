@@ -184,14 +184,6 @@ class Level:
         self.game.change_scene(PauseMenu(self.game, self))
 
 
-    # def reset_level(self):
-    #     self.load_level()
-    #     self.player.reset()
-    #     self.enemies.empty()
-    #     self.coins = 0
-    #     self.game.game_state.save_data['coins'] = 0
-    #     SaveSystem.save_game(self.game.game_state.save_data)
-
     def handle_collisions(self):
         # Коллизии с врагами
         hits = pygame.sprite.spritecollide(self.player, self.enemies, False)

@@ -29,8 +29,8 @@ class Player(pygame.sprite.Sprite):
         self.animation_frame = 0
 
         # Переменные измерений
-        self.PLAYER_SPEED = 300
-        self.PLAYER_JUMP_POWER = 8
+        self.PLAYER_SPEED = 180
+        self.PLAYER_JUMP_POWER = 6
         self.GRAVITY = 10
 
         self.blocks = pygame.sprite.Group()

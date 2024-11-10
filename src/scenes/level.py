@@ -6,6 +6,7 @@ from src.entities.block import Block
 from src.entities.blocks.finish_block import FinishBlock 
 from src.entities.powerup import PowerUp
 from src.entities.coin import Coin
+from src.entities.blocks import CoinsBlock
 from src.entities import enemies
 from src.scenes.pause_menu import PauseMenu
 
@@ -81,6 +82,11 @@ class Level:
             elif obj['type'] == 'coin':
                 coin = Coin(obj['x'], obj['y'], self.player, self.game)
                 self.all_sprites.add(coin)
+
+            elif obj['type'] == 'question':
+                question = CoinsBlock(obj['x'], obj['y'], self.player, self.game)
+                self.blocks.add(question)
+                self.all_sprites.add(question)
 
             elif obj['type'] == 'enemy':
                 enemy = getattr(enemies, obj['class'])

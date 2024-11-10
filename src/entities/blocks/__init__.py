@@ -3,7 +3,10 @@
 """
 
 from .finish_block import FinishBlock
+from .coins_block import CoinsBlock
+
 
 __all__ = [
-    'FinishBlock'
+    'FinishBlock',
+    'CoinsBlock'
 ]

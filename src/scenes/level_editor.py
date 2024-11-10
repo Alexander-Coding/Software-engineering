@@ -53,6 +53,9 @@ class LevelEditor:
             elif asset_name == 'small_castle':
                 self.asset_buttons.append({'rect': button_rect, 'name': asset_name,  'type': 'spawn', 'image_path': str(asset_file)})
 
+            elif asset_name == 'question':
+                self.asset_buttons.append({'rect': button_rect, 'name': asset_name,  'type': 'question', 'image_path': str(asset_file)})
+
             else:
                 if "enviroment" in str(asset_file) or "colors" in str(asset_file):
                     self.asset_buttons.append({'rect': button_rect, 'name': asset_name,  'type': 'enviroment', 'image_path': str(asset_file)})

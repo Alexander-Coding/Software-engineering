@@ -13,13 +13,15 @@ class PowerUp(pygame.sprite.Sprite):
         self.powerup_type = powerup_type
         self.animation_controller = AnimationController()
 
+        self.is_broken = False
+        self.is_active = True
+
         self.image = self.load_brick_sprite()
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
 
         self.load_brick_sprite()
-        self.block_hit()
 
     
     def load_brick_sprite(self):
@@ -34,3 +36,14 @@ class PowerUp(pygame.sprite.Sprite):
 
     def update(self):
         pass
+
+    def break_block(self):
+        if self.is_active:
+            self.is_active = False
+            self.block_hit()
+            return
+
+        if not self.is_active and self.scene.player.is_big:
+            self.scene.game.game_state.score += 10
+            self.scene.game.sound_manager.play_sound('powerup')
+            self.kill()

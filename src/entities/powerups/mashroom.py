@@ -10,7 +10,7 @@ class Mashroom(pygame.sprite.Sprite):
         self.game = game
         self.variant = variant
         self.load_sprites()
-
+        
         # Анимация появления
         self.emerging = True
         self.emerge_height = 32
@@ -67,4 +67,3 @@ class Mashroom(pygame.sprite.Sprite):
             self.rect.y -= 1
         else:
             self.emerging = False
-            self.active = True

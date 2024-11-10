@@ -96,6 +96,8 @@ class Player(pygame.sprite.Sprite):
                 elif self.velocity_y < 0:  # Подъем (прыжок)
                     self.rect.top = block.rect.bottom  # Устанавливаем игрока на низ блока
                     self.velocity_y = 0
+                    block.break_block()
+                    
         if not self.handle_collision():
             self.on_ground = False
 

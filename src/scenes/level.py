@@ -49,14 +49,22 @@ class Level:
         self.player = None
 
         for obj in self.level_data:
+            if obj['type'] == 'spawn':
+                self.player = Player(obj['x'], obj['y'])
+                block = Block(obj['x'], obj['y'], obj['type'], obj['image_path'], self.player, self.game)
+                
+                self.all_sprites.add(block)
+
+
+        for obj in self.level_data:
             if obj['type'] == 'block':
-                block = Block(obj['x'], obj['y'], obj['type'], obj['image_path'])
+                block = Block(obj['x'], obj['y'], obj['type'], obj['image_path'], self.player, self.game)
 
                 self.blocks.add(block)
                 self.all_sprites.add(block)
 
             elif obj['type'] == 'enviroment':
-                block = Block(obj['x'], obj['y'], obj['type'], obj['image_path'])
+                block = Block(obj['x'], obj['y'], obj['type'], obj['image_path'], self.player, self.game)
                 self.all_sprites.add(block)
 
             elif obj['type'] == 'powerup':
@@ -64,12 +72,6 @@ class Level:
                 self.blocks.add(powerup)
                 self.all_sprites.add(powerup)
 
-        for obj in self.level_data:
-            if obj['type'] == 'spawn':
-                self.player = Player(obj['x'], obj['y'])
-                block = Block(obj['x'], obj['y'], obj['type'], obj['image_path'])
-                
-                self.all_sprites.add(block)
 
         for obj in self.level_data:
             if obj['type'] == 'finish':
@@ -150,7 +152,6 @@ class Level:
             title_surface = font.render(self.level_name, True, (255, 255, 255))  # Белый цвет
             screen.blit(title_surface, (10, 10))  # Позиция в левом верхнем углу
             
-            print(self.game.game_state.score)
             # Отрисовка счета
             score_surface = font.render(f"Очки: {self.game.game_state.score}", True, (255, 255, 255))
             screen.blit(score_surface, (WINDOW_WIDTH - 150, 10))  # Позиция справа сверху

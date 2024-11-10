@@ -75,5 +75,4 @@ class Star(pygame.sprite.Sprite):
             self.rect.y -= 1
         else:
             self.emerging = False
-            self.active = True
     

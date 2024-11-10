@@ -14,8 +14,16 @@ class Block(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         
-        self.has_coin = block_type == 'question'
         self.is_broken = 'brick' in str(self.image_path)
         
     def load_sprite(self):
         return pygame.image.load(str(self.image_path))
+    
+    def update(self):
+        pass
+
+    def break_block(self):
+        if self.is_broken and self.player.is_big:
+            self.game.game_state.score += 10
+            self.game.sound_manager.play_sound('powerup')
+            self.kill()

@@ -68,6 +68,7 @@ class FireFlower(pygame.sprite.Sprite):
     def update(self):
         if self.emerging:
              self.emerge()
+             
         else:
             self.check_player_collision()
 
@@ -75,15 +76,12 @@ class FireFlower(pygame.sprite.Sprite):
     def emerge(self):
         if self.rect.y > self.initial_y - self.emerge_height:
             self.rect.y -= 1
+            
         else:
             self.emerging = False
 
     def check_player_collision(self):
         if pygame.sprite.collide_rect(self, self.player):
-
+            self.game.game_state.score += 100
             self.game.sound_manager.play_sound('powerup')
             self.kill()
-            self.invulnerability()
-
-    def invulnerability(self):
-        pass

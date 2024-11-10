@@ -30,9 +30,9 @@ class Mashroom(pygame.sprite.Sprite):
 
     def load_sprites(self):
         self.sprites = {
-            'blue': [pygame.image.load('assets/images/items/powerups/mashroom_blue.png')],
-            'green': [pygame.image.load('assets/images/items/powerups/mashroom_green.png')],
-            'red': [pygame.image.load('assets/images/items/powerups/mashroom_red.png')]
+            'blue': [pygame.transform.scale(pygame.image.load('assets/images/items/powerups/mashroom_blue.png'), (28, 28))],
+            'green': [pygame.transform.scale(pygame.image.load('assets/images/items/powerups/mashroom_green.png'), (28, 28))],
+            'red': [pygame.transform.scale(pygame.image.load('assets/images/items/powerups/mashroom_red.png'), (28, 28))]
         }
 
         self.image = self.sprites[self.variant][0]
@@ -94,5 +94,6 @@ class Mashroom(pygame.sprite.Sprite):
     def check_player_collision(self):
         if pygame.sprite.collide_rect(self, self.player):
             self.player.increase_size()
+            self.game.game_state.score += 100
             self.game.sound_manager.play_sound('powerup')
             self.kill()

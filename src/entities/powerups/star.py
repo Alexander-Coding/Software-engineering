@@ -16,7 +16,7 @@ class Star(pygame.sprite.Sprite):
         self.emerge_height = 32
         self.initial_y = y
         self.movement_direction = 1  # 1 - вправо, -1 - влево
-        self.speed = 2  # Скорость движения
+        self.speed = 2
         self.GRAVITY = 10
         self.velocity_y = 0
         self.tick = pygame.time.Clock().tick(60)
@@ -51,16 +51,16 @@ class Star(pygame.sprite.Sprite):
     def load_sprites(self):       
         self.sprites = {
             'dark': [
-                pygame.image.load('assets/images/items/powerups/star_dark.png')
+                pygame.transform.scale(pygame.image.load('assets/images/items/powerups/star_dark.png'), (28, 28))
             ],
             'green': [
-                pygame.image.load('assets/images/items/powerups/star_green.png')
+                pygame.transform.scale(pygame.image.load('assets/images/items/powerups/star_green.png'), (28, 28))
             ],
             'red': [
-                pygame.image.load('assets/images/items/powerups/star_red.png')
+                pygame.transform.scale(pygame.image.load('assets/images/items/powerups/star_red.png'), (28, 28))
             ],
             'white': [
-                pygame.image.load('assets/images/items/powerups/star_white.png')
+                pygame.transform.scale(pygame.image.load('assets/images/items/powerups/star_white.png'), (28, 28))
             ]
         }
 
@@ -85,7 +85,7 @@ class Star(pygame.sprite.Sprite):
         if self.emerging:
             self.emerge()
         else:
-            self.move()  # гриб не в состоянии появления
+            self.move()
             self.check_player_collision()
 
     def emerge(self):
@@ -100,8 +100,10 @@ class Star(pygame.sprite.Sprite):
         # Применяем гравитацию, если под грибом нет блоков
         if not self.check_block_below():
             self.velocity_y += self.GRAVITY * (self.tick / 1000)  # Применяем гравитацию к вертикальной скорости
+
             if self.velocity_y > 1:
                 self.velocity_y = 1
+
             self.rect.y += self.velocity_y  # Обновляем позицию гриба по оси Y
         else:
             if not self.on_ground:  # Устанавливаем on_ground только при первом приземлении
@@ -120,18 +122,20 @@ class Star(pygame.sprite.Sprite):
         for block in self.game.current_scene.blocks:
             if block.rect.colliderect(self.rect.move(0, 1)):  # Проверяем, есть ли коллизия с блоком чуть ниже гриба
                 return True
+            
         return False
 
     def check_block_ahead(self):
         # Проверка наличия блока перед грибом
         for block in self.game.current_scene.blocks:
-            if block.rect.colliderect(self.rect.move(self.movement_direction * self.speed,
-                                                     0)):  # Проверяем, есть ли коллизия с блоком впереди
+            if block.rect.colliderect(self.rect.move(self.movement_direction * self.speed, 0)):  # Проверяем, есть ли коллизия с блоком впереди
                 return True
+            
         return False
 
     def check_player_collision(self):
         if pygame.sprite.collide_rect(self, self.player):
             self.player.increase_size()
+            self.game.game_state.score += 100
             self.game.sound_manager.play_sound('powerup')
             self.kill()

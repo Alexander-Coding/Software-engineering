@@ -24,7 +24,8 @@ class SaveSystem:
                 'live': 3,
                 'coins': 0,
                 'sound_volume': 0,
-                'music_volume': 0
+                'music_volume': 0,
+                'mario_is_big': False
             }
 
             with open(SAVE_FILE, 'w') as f:

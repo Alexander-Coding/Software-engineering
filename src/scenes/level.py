@@ -51,7 +51,7 @@ class Level:
 
         for obj in self.level_data:
             if obj['type'] == 'spawn':
-                self.player = Player(obj['x'], obj['y'])
+                self.player = Player(obj['x'], obj['y'], self.game)
                 block = Block(obj['x'], obj['y'], obj['type'], obj['image_path'], self.player, self.game)
                 
                 self.all_sprites.add(block)
@@ -171,7 +171,7 @@ class Level:
                 screen.blit(self.heart_asset, (WINDOW_WIDTH - 300 - (i * (24)), 14))  # Позиция для сердечек
 
             # отрисовка игрока
-            screen.blit(self.player.image, (self.player.rect.x - int(self.camera_x), self.player.rect.y - self.player.image.get_height()))
+            screen.blit(self.player.image, (self.player.rect.x - int(self.camera_x), self.player.rect.y - 32))
 
             pygame.display.flip()
             

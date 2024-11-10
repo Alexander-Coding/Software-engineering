@@ -31,6 +31,15 @@ class GameState:
     def coins(self):
         return self.save_data['coins']
     
+    @property
+    def mario_is_big(self):
+        return self.save_data['mario_is_big']
+    
+    @mario_is_big.setter
+    def mario_is_big(self, value):
+        self.save_data['mario_is_big'] = value
+        SaveSystem.save_game(self.save_data)
+    
     @score.setter
     def score(self, value):
         self.save_data['score'] = value

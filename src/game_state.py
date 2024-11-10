@@ -38,13 +38,13 @@ class GameState:
 
     @music_volume.setter
     def music_volume(self, value):
-        if value > 0 and value < 100:
+        if value >= 0 and value <= 1:
             self.save_data['music_volume'] = value
             SaveSystem.save_game(self.save_data)
 
     @sound_volume.setter
     def sound_volume(self, value):
-        if value > 0 and value < 100:
+        if value >= 0 and value <= 1:
             self.save_data['sound_volume'] = value
             SaveSystem.save_game(self.save_data)
 

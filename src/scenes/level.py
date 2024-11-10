@@ -179,7 +179,7 @@ class Level:
             print(f"Ошибка при отрисовке уровня: {e}")
 
     def handle_event(self, event):
-        print(f"Обработка события в уровне: {event}")  # Отладка
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                self.pause_game()

@@ -33,6 +33,8 @@ class Player(pygame.sprite.Sprite):
         self.PLAYER_JUMP_POWER = 6
         self.GRAVITY = 10
 
+        self.is_big = False  # Флаг для отслеживания размера игрока
+
         self.blocks = pygame.sprite.Group()
         
     def load_sprites(self):
@@ -129,3 +131,7 @@ class Player(pygame.sprite.Sprite):
         
         if not self.facing_right:
             self.image = pygame.transform.flip(self.image, True, False)
+
+    def increase_size(self):
+        """Увеличивает размер игрока."""
+        self.is_big = True  # Устанавливаем флаг, что игрок стал большим

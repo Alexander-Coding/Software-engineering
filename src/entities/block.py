@@ -13,7 +13,7 @@ class Block(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        
+
         self.is_broken = 'brick' in str(self.image_path)
         
     def load_sprite(self):

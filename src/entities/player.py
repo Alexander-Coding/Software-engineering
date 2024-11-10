@@ -30,8 +30,8 @@ class Player(pygame.sprite.Sprite):
 
         # Переменные измерений
         self.PLAYER_SPEED = 180
-        self.PLAYER_JUMP_POWER = 6
-        self.GRAVITY = 10
+        self.PLAYER_JUMP_POWER = 8
+        self.GRAVITY = 15
 
         self.blocks = pygame.sprite.Group()
         
@@ -97,7 +97,7 @@ class Player(pygame.sprite.Sprite):
                     self.rect.top = block.rect.bottom  # Устанавливаем игрока на низ блока
                     self.velocity_y = 0
                     block.break_block()
-                    
+
         if not self.handle_collision():
             self.on_ground = False
 

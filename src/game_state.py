@@ -19,10 +19,34 @@ class GameState:
     def coins(self):
         return self.save_data['coins']
     
+    @property
+    def music_volume(self):
+        return self.save_data['music_volume']
+        
+    @property
+    def sound_volume(self):
+        return self.save_data['sound_volume']
+    
+    @property
+    def coins(self):
+        return self.save_data['coins']
+    
     @score.setter
     def score(self, value):
         self.save_data['score'] = value
         SaveSystem.save_game(self.save_data)
+
+    @music_volume.setter
+    def music_volume(self, value):
+        if value > 0 and value < 100:
+            self.save_data['music_volume'] = value
+            SaveSystem.save_game(self.save_data)
+
+    @sound_volume.setter
+    def sound_volume(self, value):
+        if value > 0 and value < 100:
+            self.save_data['sound_volume'] = value
+            SaveSystem.save_game(self.save_data)
 
     @live.setter
     def live(self, value):

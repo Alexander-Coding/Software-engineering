@@ -5,7 +5,6 @@ from src.config import *
 class Block(pygame.sprite.Sprite):
     def __init__(self, x, y, block_type, image_path):
         super().__init__()
-        print(f"Создание блока на {x}, {y}")
         self.block_type = block_type
         self.image_path = image_path
         self.load_sprite()
@@ -17,10 +16,8 @@ class Block(pygame.sprite.Sprite):
         self.is_broken = False
         
     def load_sprite(self):
-        # Временно создаем прямоугольник
-        self.image = pygame.Surface((32, 32))
-
         if self.block_type == 'question':
+            self.image = pygame.Surface((32, 32))
             self.image.fill((255, 200, 0))
 
         else:

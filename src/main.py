@@ -4,6 +4,7 @@ from src.config import *
 from scenes.menu import MainMenu
 from game_state import GameState
 from src.utils import SoundManager
+from src.scenes import LevelSelect
 
 
 class Game:
@@ -48,6 +49,9 @@ class Game:
     
     def change_scene(self, scene):
         self.current_scene = scene
+
+    def level_complete(self):
+        self.change_scene(LevelSelect(self))
 
 if __name__ == "__main__":
     game = Game()

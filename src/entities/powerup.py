@@ -27,7 +27,7 @@ class PowerUp(pygame.sprite.Sprite):
     
 
     def block_hit(self):
-        self.scene.game.sound_manager.play_sound('block_hit')
+        #self.scene.game.sound_manager.play_sound('block_hit')
         powerup_obj = getattr(powerups, self.powerup_type)
         self.scene.all_sprites.add(powerup_obj(self.rect.x, self.rect.y, self.scene.player, self.scene.game, self.variant))
 

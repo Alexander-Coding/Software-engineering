@@ -16,6 +16,7 @@ class SoundManager:
             'powerup': 'powerup.mp3',
             'death': 'death.mp3',
             'stomp': 'stomp.mp3',
+            'block_hit':"block_hit.mp3"
         }
 
         try:

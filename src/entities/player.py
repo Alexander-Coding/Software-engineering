@@ -41,7 +41,7 @@ class Player(pygame.sprite.Sprite):
 
         self.blocks = pygame.sprite.Group()
         
-    def load_sprites(self):
+    def load_sprites(self, is_big=False):
         self.sprites = {
             'idle': [
                 pygame.image.load(f'assets/images/characters/mario/small/idle.png')
@@ -66,9 +66,18 @@ class Player(pygame.sprite.Sprite):
 
         self.image = new_surface
 
+        if is_big:
+            x = self.rect.x
+            y = self.rect.y
+
+        else:
+            y = self.y
+            x = self.x
+
         self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
+
+        self.rect.x = x
+        self.rect.y = y
         
 
     def load_big_sprites(self):
@@ -186,3 +195,9 @@ class Player(pygame.sprite.Sprite):
             self.is_big = True
             self.game.game_state.mario_is_big = True
             self.load_big_sprites()
+
+    def reducing_size(self):
+        if self.is_big:
+            self.is_big = False
+            self.game.game_state.mario_is_big = False
+            self.load_sprites(True)

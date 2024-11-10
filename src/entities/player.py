@@ -11,7 +11,11 @@ class Player(pygame.sprite.Sprite):
 
         self.load_sprites()
         self.image = self.sprites['idle'][0]
-        self.image = pygame.transform.scale(self.image, (24, 32))
+        new_surface = pygame.Surface((self.image.get_width() - 12, self.image.get_height()))
+        new_surface.blit(self.image, (0, 0), (0, 0, self.image.get_width() - 12, self.image.get_height()))
+
+        # Заменяем исходное изображение
+        self.image = new_surface
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y

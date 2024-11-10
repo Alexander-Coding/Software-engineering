@@ -27,6 +27,7 @@ class Player(pygame.sprite.Sprite):
         
         # Состояния
         self.facing_right = True
+        self.invulnerability_frame = 0
         
         self.is_invincible = False
         self.current_animation = 'idle'
@@ -116,6 +117,12 @@ class Player(pygame.sprite.Sprite):
 
 
     def update(self):
+        if self.invulnerability_frame == 0:
+            self.is_invincible = False
+
+        if self.is_invincible and self.invulnerability_frame > 0:
+            self.invulnerability_frame -= 1
+
         if not self.on_ground:
             self.apply_gravity()
         self.handle_movement()
@@ -196,8 +203,13 @@ class Player(pygame.sprite.Sprite):
             self.game.game_state.mario_is_big = True
             self.load_big_sprites()
 
+
     def reducing_size(self):
         if self.is_big:
             self.is_big = False
             self.game.game_state.mario_is_big = False
             self.load_sprites(True)
+
+    def get_invulnerability(self):
+        self.is_invincible = True
+        self.invulnerability_frame += 360

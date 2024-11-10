@@ -135,7 +135,7 @@ class Star(pygame.sprite.Sprite):
 
     def check_player_collision(self):
         if pygame.sprite.collide_rect(self, self.player):
-            self.player.increase_size()
+            self.player.get_invulnerability()
             self.game.game_state.score += 100
             self.game.sound_manager.play_sound('powerup')
             self.kill()

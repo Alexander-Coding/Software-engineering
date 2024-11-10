@@ -15,7 +15,7 @@ BLUE = (0, 0, 255)
 PLAYER_SPEED = 5
 PLAYER_JUMP_POWER = 5
 MAX_FALL_SPEED = 5
-GRAVITY = 10
+GRAVITY = 0.8
 
 # Пути к файлам
 SAVE_FILE = "save_data.json"

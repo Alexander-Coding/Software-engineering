@@ -29,7 +29,6 @@ class Game:
             
     def handle_events(self):
          for event in pygame.event.get():
-
             if event.type == pygame.QUIT:
                 self.quit()
                 return

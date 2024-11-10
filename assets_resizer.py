@@ -18,13 +18,13 @@ def process_images(input_folder):
                         img_cropped = img.crop(bbox)
                         img_cropped.save(file_path)
                         # Масштабируем до 32x32 пикселей
-                        #img_resized = img_cropped.resize((32, 32), Image.LANCZOS)
+                        img_resized = img_cropped.resize((32, 32), Image.LANCZOS)
                         # Сохраняем изображение, перезаписывая исходное
-                        #img_resized.save(file_path)
+                        img_resized.save(file_path)
                         print(f"Обработано: {file_path}")
 
 
 if __name__ == "__main__":
     # Укажите путь к папке с изображениями
-    input_folder = r"C:\Users\Alexa\github\BioSense\mario\assets\images"
+    input_folder = r"C:\Users\Alexa\github\BioSense\mario\assets\images\blocks\test"
     process_images(input_folder)

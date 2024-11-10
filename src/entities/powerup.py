@@ -2,7 +2,6 @@ import pygame
 import pygame.locals
 from src.config import *
 from src.entities import powerups
-from src.utils.animation import AnimationController
 
 
 class PowerUp(pygame.sprite.Sprite):
@@ -11,7 +10,6 @@ class PowerUp(pygame.sprite.Sprite):
         self.scene = scene
         self.variant = variant
         self.powerup_type = powerup_type
-        self.animation_controller = AnimationController()
 
         self.is_broken = False
         self.is_active = True

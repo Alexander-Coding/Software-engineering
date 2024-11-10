@@ -3,7 +3,7 @@ import pygame
 from src.config import *
 from src.entities.player import Player
 from src.entities.block import Block
-from src.entities.finish_block import FinishBlock
+from src.entities.blocks.finish_block import FinishBlock 
 from src.entities.powerup import PowerUp
 from src.entities.coin import Coin
 from src.entities import enemies

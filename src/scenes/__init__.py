@@ -10,6 +10,7 @@ from .settings import Settings
 from .controls_menu import ControlsMenu
 from .game_over_menu import GameOverMenu
 from .level_editor import LevelEditor
+from .level_select_from_level_editor import LevelSelectorFromLevelEditor
 
 __all__ = [
     'MainMenu',
@@ -18,5 +19,6 @@ __all__ = [
     'Settings',
     'LevelEditor',
     'ControlsMenu',
-    'GameOverMenu'
+    'GameOverMenu',
+    'LevelSelectorFromLevelEditor'
 ]

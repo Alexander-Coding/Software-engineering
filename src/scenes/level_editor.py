@@ -12,12 +12,13 @@ from pygame.locals import *
 
 
 class LevelEditor:
-    def __init__(self, game):
+    def __init__(self, game, level_name, level_data):
         self.game = game
         self.grid_size = 32
         self.current_tile = None
         self.tiles = {}
-        self.level_data = []
+        self.level_name = level_name
+        self.level_data = level_data
         self.camera_x = 0
         self.asset_list_rect = pygame.Rect(WINDOW_WIDTH - 200, 0, 200, WINDOW_HEIGHT)
         self.asset_buttons = []
@@ -32,7 +33,6 @@ class LevelEditor:
         
         # Параметры диалогового окна
         self.showing_save_dialog = False
-        self.level_name = ""
         self.dialog_rect = pygame.Rect(WINDOW_WIDTH // 2 - 150, WINDOW_HEIGHT // 2 - 75, 300, 150)
         self.input_rect = pygame.Rect(self.dialog_rect.x + 20, self.dialog_rect.y + 60, 260, 30)
 
@@ -170,7 +170,11 @@ class LevelEditor:
                 elif event.button == 1:  # ЛКМ
                     if self.save_button_rect.collidepoint(mouse_pos):
                         self.mouse_held = False
-                        self.showing_save_dialog = True
+
+                        if self.level_name == 'Новый уровень':
+                            self.showing_save_dialog = True
+                        else:
+                            self.save_level(self.level_name)
 
                     elif self.asset_list_rect.collidepoint(mouse_pos):
                         adjusted_y = mouse_pos[1] + self.scroll_y

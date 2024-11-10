@@ -70,8 +70,8 @@ class MainMenu:
         self.game.change_scene(LevelSelect(self.game))
 
     def open_editor(self):
-        from src.scenes.level_editor import LevelEditor
-        self.game.change_scene(LevelEditor(self.game))
+        from src.scenes import LevelSelectorFromLevelEditor
+        self.game.change_scene(LevelSelectorFromLevelEditor(self.game))
 
     def open_settings(self):
         from src.scenes.settings import Settings

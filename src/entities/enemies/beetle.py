@@ -3,8 +3,8 @@ from src.entities.enemy import Enemy
 
 
 class Beetle(Enemy):
-    def __init__(self, x, y, variant='dark'):
-        super().__init__(x, y, variant)
+    def __init__(self, x, y, player, game, blocks, variant='dark'):
+        super().__init__(x, y, player, game, blocks, variant)
         self.velocity_x = 1.5
         self.animation_speed = 0.12
         self.is_shell_mode = False

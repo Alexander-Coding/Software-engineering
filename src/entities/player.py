@@ -117,7 +117,7 @@ class Player(pygame.sprite.Sprite):
 
 
     def update(self):
-      if self.invulnerability_frame == 0:
+        if self.invulnerability_frame == 0:
             self.is_invincible = False
 
         if self.is_invincible and self.invulnerability_frame > 0:
@@ -166,7 +166,9 @@ class Player(pygame.sprite.Sprite):
                         self.velocity_y = 0
                         self.on_ground = True  # Игрок на земле
                     elif self.velocity_y < 0:  # Подъем (прыжок)
-                        self.rect.top = block.rect.bottom  # Устанавливаем игрока на низ блока
+                        self.rect.top = block.rect.bottom + 1  # Устанавливаем игрока на низ блока
+                        self.velocity_y = 0
+                        block.break_block()
 
             if not self.handle_collision():
                 self.on_ground = False
@@ -207,11 +209,13 @@ class Player(pygame.sprite.Sprite):
         print(self.is_bouncing)
 
     def Death(self):
+        if self.is_big:
+            self.reducing_size()
+            return
 
         self.is_alive = False
         self.on_ground = False
-
-        self.game.change_scene(self.game.current_scene)
+        self.game.death()
 
     def animate(self):
         if not self.on_ground:

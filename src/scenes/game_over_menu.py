@@ -3,8 +3,9 @@ from src.config import *
 
 
 class GameOverMenu:
-    def __init__(self, game):
+    def __init__(self, game, level):
         self.game = game
+        self.level = level
         self.sound_manager = self.game.sound_manager
         self.buttons = [
             {'text': 'Главное меню', 'action': self.go_to_main_menu},
@@ -75,5 +76,5 @@ class GameOverMenu:
         self.game.change_scene(MainMenu(self.game))
 
     def restart_level(self):
-        self.game.current_scene.level()  # Перезагрузка уровня
-        self.game.change_scene(self.game.current_scene)
+        self.level.load_level()
+        self.game.change_scene(self.level)

@@ -59,9 +59,8 @@ class GameState:
 
     @live.setter
     def live(self, value):
-        if self.save_data['score'] <= 3 and value > 0 and value < 3:
-            self.save_data['score'] = value
-            SaveSystem.save_game(self.save_data)
+        self.save_data['live'] = value
+        SaveSystem.save_game(self.save_data)
 
     @coins.setter
     def coins(self, value):
@@ -72,6 +71,9 @@ class GameState:
 
             self.save_data['coins'] = value
             SaveSystem.save_game(self.save_data)
+
+    def reset_game(self):
+        self.save_data = SaveSystem.reset_game()
     
     def complete_level(self, level_id):
         if level_id not in self.save_data['completed_levels']:

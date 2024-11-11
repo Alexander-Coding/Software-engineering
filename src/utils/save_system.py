@@ -13,7 +13,24 @@ class SaveSystem:
         
         except Exception as e:
             print(f"Ошибка сохранения: {e}")
-            return False
+            return
+
+    @staticmethod
+    def reset_game():
+        data = {
+            'completed_levels': [],
+            'score': 0,
+            'live': 3,
+            'coins': 0,
+            'sound_volume': 0,
+            'music_volume': 0,
+            'mario_is_big': False
+        }
+
+        with open(SAVE_FILE, 'w') as f:
+            json.dump(data, f)
+
+        return data
 
     @staticmethod
     def load_game():

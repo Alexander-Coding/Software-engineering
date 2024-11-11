@@ -5,12 +5,12 @@ from src.config import *
 
 
 class Koopa(Enemy):
-    def __init__(self, x, y, variant='green', behavior='walking'):
+    def __init__(self, x, y, player, game, blocks, variant='green', behavior='walking'):
         """
         variant: 'green', 'red', 'blue'
         behavior: 'walking', 'flying', 'shell'
         """
-        super().__init__(x, y, variant)
+        super().__init__(x, y, player, game, blocks, variant)
         self.behavior = behavior
         self.velocity_x = 0.5
         self.animation_speed = 0.15

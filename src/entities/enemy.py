@@ -4,11 +4,12 @@ from src.config import *
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, x, y, variant='default'):
+    def __init__(self, x, y, player, game, blocks, variant='default'):
         super().__init__()
 
-        self.player = None
-        self.blocks = None
+        self.game = game
+        self.player = player
+        self.blocks = blocks
 
         self.variant = variant
         

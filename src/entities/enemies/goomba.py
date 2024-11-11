@@ -3,8 +3,8 @@ from src.entities.enemy import Enemy
 
 
 class Goomba(Enemy):
-    def __init__(self, x, y, variant='dark'):
-        super().__init__(x, y, variant)
+    def __init__(self, x, y, player, game, blocks, variant='dark'):
+        super().__init__(x, y, player, game, blocks, variant)
 
         # Уникальные параметры для Goomba
         self.velocity_x = 2

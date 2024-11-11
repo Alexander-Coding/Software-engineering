@@ -4,8 +4,8 @@ from src.entities.enemy import Enemy
 
 
 class Blooper(Enemy):
-    def __init__(self, x, y, variant='dark'):
-        super().__init__(x, y, variant)
+    def __init__(self, x, y, player, game, blocks, variant='dark'):
+        super().__init__(x, y, player, game, blocks, variant)
         self.animation_speed = 0.15
         self.swim_speed = 3
         self.chase_distance = 200

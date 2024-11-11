@@ -48,6 +48,7 @@ class Level:
         self.blocks = pygame.sprite.Group()
         self.enemies = pygame.sprite.Group()
         self.player = None
+        self.camera_x = 0
 
         for obj in self.level_data:
             if obj['type'] == 'spawn':
@@ -92,13 +93,10 @@ class Level:
                 enemy = getattr(enemies, obj['class'])
 
                 if obj['behavior'] == None:
-                    enemy_obj = enemy(obj['x'], obj['y'], obj['color'])
+                    enemy_obj = enemy(obj['x'], obj['y'], self.player, self.game, self.blocks, obj['color'])
 
                 else:
-                    enemy_obj = enemy(obj['x'], obj['y'], obj['color'], obj['behavior'])
-                    
-                enemy_obj.game = self.game
-                enemy_obj.player = self.player
+                    enemy_obj = enemy(obj['x'], obj['y'], self.player, self.game, self.blocks, obj['color'], obj['behavior'])
 
                 self.enemies.add(enemy_obj)
                 self.all_sprites.add(enemy_obj)

@@ -1,57 +1,51 @@
 import pygame
 from src.config import *
 
+
 class SoundManager:
-    def __init__(self):
+    def __init__(self, game):
+        self.game = game
         self.sounds = {}
         self.music_volume = 1.0
         self.sound_volume = 1.0
-        self.load_sounds()
-        self.load_music()
-    def load_sounds(self):
+
+
+    def play_sound(self, sound_name):
         sound_files = {
             'jump': 'jump.mp3',
             'coins': 'coins.mp3',
             'powerup': 'powerup.mp3',
             'death': 'death.mp3',
             'stomp': 'stomp.mp3',
+            'block_hit':"block_hit.mp3"
         }
 
-        for sound_name, file_name in sound_files.items():
-            try:
-                sound = pygame.mixer.Sound(f'assets/musics/{file_name}')
-                with open('settings.txt', 'r') as f:
-                    music_volume, sound_volume = map(float, f.read().split(','))
-                    self.sound_volume = float(sound_volume)
-                self.sounds[sound_name] = sound
-            except pygame.error:
-                print(f"Не удалось загрузить звук: {file_name}")
-
-    def load_music(self):
         try:
-            pygame.mixer.music.load(f'assets/musics/Super_Mario.mp3')
-            with open('settings.txt', 'r') as f:
-                music_volume, sound_volume = map(float, f.read().split(','))
-                self.music_volume = float(music_volume)
-            pygame.mixer.music.set_volume(self.music_volume)
-            pygame.mixer.music.play(-1)  # -1 для бесконечного повтора
-        except pygame.error:
-            print(f"Не удалось загрузить музыку: main_theme")
-
-    def play_sound(self, sound_name):
-        if sound_name in self.sounds:
+            sound = pygame.mixer.Sound(f'assets/musics/{sound_files[sound_name]}')
+            self.sound_volume = self.game.game_state.sound_volume
+            self.sounds[sound_name] = sound
             self.sounds[sound_name].set_volume(self.sound_volume)
-            self.sounds[sound_name].play()
+
+        except pygame.error:
+            print(f"Не удалось загрузить звук: {sound_name}")
+
+        self.sounds[sound_name].play()
 
     def play_music(self, music_name):
         try:
-            pygame.mixer.music.load(f'assets/musics/{music_name}.mp3')
+            if not pygame.mixer.music.get_busy():  # Проверяем, играет ли музыка
+                pygame.mixer.music.load(f'assets/musics/{music_name}.mp3')
 
-            with open('settings.txt', 'r') as f:
-                music_volume, sound_volume = map(float, f.read().split(','))
-                self.music_volume = float(music_volume)
-            pygame.mixer.music.set_volume(self.music_volume)
-            pygame.mixer.music.play(-1)  # -1 для бесконечного повтора
+                self.music_volume = self.game.game_state.music_volume
+
+                pygame.mixer.music.set_volume(self.music_volume)
+                pygame.mixer.music.play(-1)  # -1 для бесконечного повтора
+            else:
+                pygame.mixer.music.fadeout(500)  # Плавное затухание текущей музыки (500 мс)
+                pygame.mixer.music.load(f'assets/musics/{music_name}.mp3')
+                pygame.mixer.music.set_volume(self.music_volume)
+                pygame.mixer.music.play(-1)
+
         except pygame.error:
             print(f"Не удалось загрузить музыку: {music_name}")
 

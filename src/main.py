@@ -4,6 +4,7 @@ from src.config import *
 from scenes.menu import MainMenu
 from game_state import GameState
 from src.utils import SoundManager
+from src.scenes import LevelSelect
 
 
 class Game:
@@ -14,10 +15,9 @@ class Game:
         self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
-        self.sound_manager = SoundManager()
-        self.sound_manager.load_music()
-        self.sound_manager.load_sounds()
         self.game_state = GameState()
+        self.sound_manager = SoundManager(self)
+        self.sound_manager.play_music('Super_Mario')
         self.current_scene = MainMenu(self)
         
     def run(self):
@@ -29,7 +29,6 @@ class Game:
             
     def handle_events(self):
          for event in pygame.event.get():
-            print(event)
             if event.type == pygame.QUIT:
                 self.quit()
                 return
@@ -49,6 +48,9 @@ class Game:
     
     def change_scene(self, scene):
         self.current_scene = scene
+
+    def level_complete(self):
+        self.change_scene(LevelSelect(self))
 
 if __name__ == "__main__":
     game = Game()

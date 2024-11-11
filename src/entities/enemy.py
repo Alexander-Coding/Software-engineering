@@ -11,6 +11,7 @@ class Enemy(pygame.sprite.Sprite):
         self.blocks = None
 
         self.variant = variant
+        
         self.x = x
         self.y = y
 

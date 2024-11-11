@@ -3,37 +3,27 @@ from src.config import *
 
 
 class Block(pygame.sprite.Sprite):
-    def __init__(self, x, y, block_type, image_path):
+    def __init__(self, x, y, block_type, image_path, player, game):
         super().__init__()
-        print(f"Создание блока на {x}, {y}")
+        self.game = game
+        self.player = player
         self.block_type = block_type
         self.image_path = image_path
-        self.load_sprite()
+        self.image = self.load_sprite()
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        
-        self.has_coin = block_type == 'question'
-        self.is_broken = False
+
+        self.is_broken = 'brick' in str(self.image_path)
         
     def load_sprite(self):
-        # Временно создаем прямоугольник
-        self.image = pygame.Surface((32, 32))
+        return pygame.image.load(str(self.image_path))
+    
+    def update(self):
+        pass
 
-        if self.block_type == 'question':
-            self.image.fill((255, 200, 0))
-
-        else:
-            self.image = pygame.image.load(str(self.image_path))
-            
-    def hit(self):
-        if self.block_type == 'question' and self.has_coin:
-            self.has_coin = False
-
-            return True
-        
-        elif self.block_type == 'brick':
-            self.is_broken = True
+    def break_block(self):
+        if self.is_broken and self.player.is_big:
+            self.game.game_state.score += 10
+            self.game.sound_manager.play_sound('powerup')
             self.kill()
-
-        return False

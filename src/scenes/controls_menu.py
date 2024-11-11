@@ -18,6 +18,7 @@ class ControlsMenu:
 
         # Добавляем логику выбора
         self.selected = False  # Кнопка "Назад" не выбрана по умолчанию
+        self.hovered = False  # Кнопка "Назад" не выделена при наведении по умолчанию
 
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
@@ -25,6 +26,23 @@ class ControlsMenu:
                 self.return_to_settings()
             elif event.key == pygame.K_UP or event.key == pygame.K_DOWN:
                 self.selected = not self.selected
+                self.hovered = False  # Сбрасываем подсветку при наведении
+
+        if event.type == pygame.MOUSEMOTION:
+            text = self.font.render("Назад", True, WHITE)  # Отрисовываем текст для определения области
+            text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT - 100))
+            if text_rect.collidepoint(event.pos):
+                self.hovered = True
+                self.selected = True  # Выбираем кнопку при наведении
+            else:
+                self.hovered = False
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:  # Левая кнопка мыши
+                text = self.font.render("Назад", True, WHITE)
+                text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT - 100))
+                if text_rect.collidepoint(event.pos):
+                    self.return_to_settings()
 
     def return_to_settings(self):
         from src.scenes.settings import Settings
@@ -42,6 +60,6 @@ class ControlsMenu:
         screen.blit(self.controls_image, controls_rect)
 
         # Отрисовка кнопки "Назад" с выделением
-        text = self.font.render("Назад", True, GREEN if self.selected else WHITE)
+        text = self.font.render("Назад", True, GREEN if self.selected or self.hovered else WHITE)
         text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT - 100))
         screen.blit(text, text_rect)

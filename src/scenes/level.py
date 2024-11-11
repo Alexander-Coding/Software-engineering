@@ -96,13 +96,15 @@ class Level:
 
                 else:
                     enemy_obj = enemy(obj['x'], obj['y'], obj['color'], obj['behavior'])
-
+                    
                 enemy_obj.game = self.game
+                enemy_obj.player = self.player
 
                 self.enemies.add(enemy_obj)
                 self.all_sprites.add(enemy_obj)
 
         self.player.blocks = self.blocks
+        
 
     def create_default_level(self):
         print("Создание тестового уровня")
@@ -141,8 +143,16 @@ class Level:
     def update_camera(self):
         try:
             if self.player:
+                # Получаем текущую позицию камеры
+                current_camera_x = self.camera_x
+
+                # Вычисляем целевую позицию по оси X
                 target_x = self.player.rect.centerx - WINDOW_WIDTH // 2
-                self.camera_x += (target_x - self.camera_x) * 0.1
+
+                # Обновляем камеру только если игрок движется вправо
+                if target_x > current_camera_x:
+                    self.camera_x += (target_x - current_camera_x) * 0.1
+                    self.player.leftside = self.camera_x
         except Exception as e:
             print(f"Ошибка при обновлении камеры: {e}")
 

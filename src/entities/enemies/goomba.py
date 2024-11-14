@@ -1,4 +1,5 @@
 import pygame
+from resource_path import resource_path
 from src.entities.enemy import Enemy
 
 
@@ -37,11 +38,11 @@ class Goomba(Enemy):
         }
         self.sprites = {
             'idle': [
-                pygame.image.load(path).convert_alpha()
+                pygame.image.load(resource_path(path)).convert_alpha()
                 for path in sprite_paths[self.variant]['idle']
             ],
             'death': [
-                pygame.image.load(path).convert_alpha()
+                pygame.image.load(resource_path(path)).convert_alpha()
                 for path in sprite_paths[self.variant]['death']
             ]
         }

@@ -1,5 +1,6 @@
 import pygame
 from src.config import *
+from resource_path import resource_path
 
 
 class GameOverMenu:
@@ -15,7 +16,7 @@ class GameOverMenu:
         self.font = pygame.font.Font(None, 36)
 
         # Загружаем фон
-        self.background_image = pygame.image.load('assets/images/backgrounds/sky.png').convert_alpha()
+        self.background_image = pygame.image.load(resource_path('assets/images/backgrounds/sky.png')).convert_alpha()
         self.background_image = pygame.transform.scale(self.background_image, (WINDOW_WIDTH, WINDOW_HEIGHT))
         self.sound_manager.play_music('Super_Mario')
         # Дополнительные атрибуты для подсветки кнопок
@@ -27,17 +28,21 @@ class GameOverMenu:
             if event.key == pygame.K_UP:
                 self.selected = (self.selected - 1) % len(self.buttons)
                 self.hovered_button = None  # Сбрасываем подсветку при наведении
+
             elif event.key == pygame.K_DOWN:
                 self.selected = (self.selected + 1) % len(self.buttons)
                 self.hovered_button = None  # Сбрасываем подсветку при наведении
+
             elif event.key == pygame.K_RETURN:
                 self.buttons[self.selected]['action']()
 
         if event.type == pygame.MOUSEMOTION:
             self.hovered_button = None
+
             for i, button in enumerate(self.buttons):
                 text = self.font.render(button['text'], True, WHITE)
                 text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, 300 + i * 50))
+
                 if text_rect.collidepoint(event.pos):
                     self.hovered_button = i
                     self.selected = i  # Обновляем selected при наведении мышкой
@@ -48,6 +53,7 @@ class GameOverMenu:
                 for i, button in enumerate(self.buttons):
                     text = self.font.render(button['text'], True, WHITE)
                     text_rect = text.get_rect(center=(WINDOW_WIDTH // 2, 300 + i * 50))
+
                     if text_rect.collidepoint(event.pos):
                         button['action']()
                         break

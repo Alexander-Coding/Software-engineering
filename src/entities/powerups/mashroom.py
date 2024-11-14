@@ -1,5 +1,7 @@
 import pygame
+from resource_path import resource_path
 from src.config import *
+
 
 class Mashroom(pygame.sprite.Sprite):
     def __init__(self, x, y, player, game, variant='red'):
@@ -30,9 +32,9 @@ class Mashroom(pygame.sprite.Sprite):
 
     def load_sprites(self):
         self.sprites = {
-            'blue': [pygame.transform.scale(pygame.image.load('assets/images/items/powerups/mashroom_blue.png'), (28, 28))],
-            'green': [pygame.transform.scale(pygame.image.load('assets/images/items/powerups/mashroom_green.png'), (28, 28))],
-            'red': [pygame.transform.scale(pygame.image.load('assets/images/items/powerups/mashroom_red.png'), (28, 28))]
+            'blue': [pygame.transform.scale(pygame.image.load(resource_path('assets/images/items/powerups/mashroom_blue.png')), (28, 28))],
+            'green': [pygame.transform.scale(pygame.image.load(resource_path('assets/images/items/powerups/mashroom_green.png')), (28, 28))],
+            'red': [pygame.transform.scale(pygame.image.load(resource_path('assets/images/items/powerups/mashroom_red.png')), (28, 28))]
         }
 
         self.image = self.sprites[self.variant][0]

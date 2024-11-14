@@ -1,6 +1,6 @@
 import pygame
 from src.config import *
-
+from resource_path import resource_path
 
 class SoundManager:
     def __init__(self, game):
@@ -17,11 +17,14 @@ class SoundManager:
             'powerup': 'powerup.mp3',
             'death': 'death.mp3',
             'stomp': 'stomp.mp3',
-            'block_hit':"block_hit.mp3"
+            'block_hit': 'block_hit.mp3',
+            'last_death': 'last_death.mp3',
+            'level_complete': 'level_complete.mp3',
+            'titles': 'titles.mp3'
         }
 
         try:
-            sound = pygame.mixer.Sound(f'assets/musics/{sound_files[sound_name]}')
+            sound = pygame.mixer.Sound(resource_path(f'assets/musics/{sound_files[sound_name]}'))
             self.sound_volume = self.game.game_state.sound_volume
             self.sounds[sound_name] = sound
             self.sounds[sound_name].set_volume(self.sound_volume)
@@ -34,7 +37,7 @@ class SoundManager:
     def play_music(self, music_name):
         try:
             if not pygame.mixer.music.get_busy():  # Проверяем, играет ли музыка
-                pygame.mixer.music.load(f'assets/musics/{music_name}.mp3')
+                pygame.mixer.music.load(resource_path(f'assets/musics/{music_name}.mp3'))
 
                 self.music_volume = self.game.game_state.music_volume
 
@@ -42,7 +45,7 @@ class SoundManager:
                 pygame.mixer.music.play(-1)  # -1 для бесконечного повтора
             else:
                 pygame.mixer.music.fadeout(500)  # Плавное затухание текущей музыки (500 мс)
-                pygame.mixer.music.load(f'assets/musics/{music_name}.mp3')
+                pygame.mixer.music.load(resource_path(f'assets/musics/{music_name}.mp3'))
                 pygame.mixer.music.set_volume(self.music_volume)
                 pygame.mixer.music.play(-1)
 

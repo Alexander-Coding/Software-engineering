@@ -1,4 +1,5 @@
 import pygame
+from resource_path import resource_path
 
 
 class FireFlower(pygame.sprite.Sprite):
@@ -46,16 +47,16 @@ class FireFlower(pygame.sprite.Sprite):
     def load_sprites(self):       
         self.sprites = {
             'yellow': [
-                pygame.image.load('assets/images/items/powerups/flower_yellow.png')
+                pygame.image.load(resource_path('assets/images/items/powerups/flower_yellow.png'))
             ],
             'green': [
-                pygame.image.load('assets/images/items/powerups/flower_green.png')
+                pygame.image.load(resource_path('assets/images/items/powerups/flower_green.png'))
             ],
             'red': [
-                pygame.image.load('assets/images/items/powerups/flower_red.png')
+                pygame.image.load(resource_path('assets/images/items/powerups/flower_red.png'))
             ],
             'dark': [
-                pygame.image.load('assets/images/items/powerups/flower_dark.png')
+                pygame.image.load(resource_path('assets/images/items/powerups/flower_dark.png'))
             ]
         }
 

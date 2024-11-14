@@ -3,6 +3,7 @@ import json
 import pygame
 from src.config import *
 from src.scenes import LevelEditor
+from resource_path import resource_path
 
 
 class LevelSelectorFromLevelEditor:
@@ -13,7 +14,7 @@ class LevelSelectorFromLevelEditor:
         self.font = pygame.font.Font(None, 36)
 
         # Загружаем фон для меню выбора уровня
-        self.background_image = pygame.image.load('assets/images/backgrounds/level_selected.png').convert_alpha()
+        self.background_image = pygame.image.load(resource_path('assets/images/backgrounds/level_selected.png')).convert_alpha()
         self.background_image = pygame.transform.scale(self.background_image, (WINDOW_WIDTH, WINDOW_HEIGHT))
 
         # Создаем прямоугольники для каждого уровня
@@ -30,10 +31,12 @@ class LevelSelectorFromLevelEditor:
                 'name': 'Новый уровень',
                 'data': []
             }]
+        
+        levels_folder = resource_path('levels')
 
-        for filename in os.listdir('levels'):
+        for filename in os.listdir(levels_folder):
             if filename.endswith('.json'):
-                with open(os.path.join('levels', filename), 'r') as f:
+                with open(os.path.join(levels_folder, filename), 'r') as f:
                     level_data = json.load(f)
                     level_name = filename[:-5]
                     levels.append({

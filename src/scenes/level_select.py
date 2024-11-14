@@ -3,6 +3,7 @@ import pygame
 import json
 from src.scenes.level import Level
 from src.config import *
+from resource_path import resource_path
 
 class LevelSelect:
     def __init__(self, game):
@@ -12,7 +13,7 @@ class LevelSelect:
         self.font = pygame.font.Font(None, 36)
 
         # Загружаем фон для меню выбора уровня
-        self.background_image = pygame.image.load('assets/images/backgrounds/level_selected.png').convert_alpha()
+        self.background_image = pygame.image.load(resource_path('assets/images/backgrounds/level_selected.png')).convert_alpha()
         self.background_image = pygame.transform.scale(self.background_image, (WINDOW_WIDTH, WINDOW_HEIGHT))
 
         # Создаем прямоугольники для каждого уровня
@@ -26,10 +27,15 @@ class LevelSelect:
         completed_levels = self.game.game_state.save_data['completed_levels']
         levels = []
 
+        # Получаем путь к папке levels с использованием resource_path
+        levels_folder = resource_path('levels')
+
         # Читаем JSON-файлы из папки levels
-        for filename in os.listdir('levels'):
+        for filename in os.listdir(levels_folder):
             if filename.endswith('.json'):
-                with open(os.path.join('levels', filename), 'r') as f:
+                level_file_path = os.path.join(levels_folder, filename)
+                
+                with open(level_file_path, 'r') as f:
                     level_data = json.load(f)
                     level_name = filename[:-5]  # Имя файла без .json
                     status = "Пройден" if level_name in completed_levels else "Не пройден"
@@ -40,6 +46,8 @@ class LevelSelect:
                         'locked': locked,
                         'data': level_data  # Добавляем данные уровня
                     })
+
+        self.game.last_level_name = levels[-1]['name']
 
         return levels
 

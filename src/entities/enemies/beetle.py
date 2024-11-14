@@ -1,4 +1,5 @@
 import pygame
+from resource_path import resource_path
 from src.entities.enemy import Enemy
 
 
@@ -45,15 +46,15 @@ class Beetle(Enemy):
         
         self.sprites = {
             'walk_left': [
-                pygame.image.load(path).convert_alpha() 
+                pygame.image.load(resource_path(path)).convert_alpha() 
                 for path in sprite_paths[self.variant]['walk_left']
             ],
             'walk_right': [
-                pygame.image.load(path).convert_alpha() 
+                pygame.image.load(resource_path(path)).convert_alpha() 
                 for path in sprite_paths[self.variant]['walk_right']
             ],
             'shell': [
-                pygame.image.load(path).convert_alpha() 
+                pygame.image.load(resource_path(path)).convert_alpha() 
                 for path in sprite_paths[self.variant]['shell']
             ]
         }

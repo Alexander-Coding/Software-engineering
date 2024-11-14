@@ -10,6 +10,7 @@ from .settings import Settings
 from .controls_menu import ControlsMenu
 from .game_over_menu import GameOverMenu
 from .level_editor import LevelEditor
+from .final_credits_scene import FinalCreditsScene
 from .level_select_from_level_editor import LevelSelectorFromLevelEditor
 
 __all__ = [
@@ -20,5 +21,6 @@ __all__ = [
     'LevelEditor',
     'ControlsMenu',
     'GameOverMenu',
+    'FinalCreditsScene',
     'LevelSelectorFromLevelEditor'
 ]

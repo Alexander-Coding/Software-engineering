@@ -4,6 +4,7 @@ from src.config import *
 from scenes.menu import MainMenu
 from game_state import GameState
 from src.utils import SoundManager
+from src.scenes import FinalCreditsScene
 from src.scenes import LevelSelect, GameOverMenu
 
 
@@ -19,6 +20,7 @@ class Game:
         self.sound_manager = SoundManager(self)
         self.sound_manager.play_music('Super_Mario')
         self.current_scene = MainMenu(self)
+        self.last_level_name = ""
         
     def run(self):
         while True:
@@ -52,14 +54,19 @@ class Game:
     def level_complete(self):
         self.change_scene(LevelSelect(self))
 
+    def final_level_complete(self):
+        self.change_scene(FinalCreditsScene(self))
+
     def death(self):
         self.game_state.live -= 1
 
         if self.game_state.live == 0:
             self.game_state.reset_game()
             self.change_scene(MainMenu(self))
+            self.sound_manager.play_sound('last_death')
             return
 
+        self.sound_manager.play_sound('death')
         self.change_scene(GameOverMenu(self, self.current_scene))
 
 

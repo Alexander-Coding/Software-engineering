@@ -1,5 +1,6 @@
 import pygame
 from src.config import *
+from resource_path import resource_path
 
 
 class Coin(pygame.sprite.Sprite):
@@ -17,7 +18,7 @@ class Coin(pygame.sprite.Sprite):
 
     @staticmethod
     def get_image():
-        return pygame.image.load('assets/images/items/coin/coin_spin_2.png')
+        return pygame.image.load(resource_path('assets/images/items/coin/coin_spin_2.png'))
     
 
     @staticmethod
@@ -27,9 +28,9 @@ class Coin(pygame.sprite.Sprite):
 
     def load_sprites(self):
         self.sprites = [
-            pygame.image.load('assets/images/items/coin/coin_spin_1.png'),
-            pygame.image.load('assets/images/items/coin/coin_spin_2.png'),
-            pygame.image.load('assets/images/items/coin/coin_spin_3.png')
+            pygame.image.load(resource_path('assets/images/items/coin/coin_spin_1.png')),
+            pygame.image.load(resource_path('assets/images/items/coin/coin_spin_2.png')),
+            pygame.image.load(resource_path('assets/images/items/coin/coin_spin_3.png'))
         ]
         
     def update(self):

@@ -1,5 +1,4 @@
 import pygame
-
 from src.config import *
 from src.entities.player import Player
 from src.entities.block import Block
@@ -9,6 +8,7 @@ from src.entities.coin import Coin
 from src.entities.blocks import CoinsBlock
 from src.entities import enemies
 from src.scenes.pause_menu import PauseMenu
+from resource_path import resource_path
 
 
 class Level:
@@ -38,10 +38,10 @@ class Level:
             self.all_sprites.add(self.player)
 
     def load_heart_asset(self):
-        return pygame.transform.scale(pygame.image.load('assets/images/ui/heart.png').convert_alpha(), (16, 16))
+        return pygame.transform.scale(pygame.image.load(resource_path('assets/images/ui/heart.png')).convert_alpha(), (16, 16))
     
     def load_coin_asset(self):
-        return pygame.transform.scale(pygame.image.load('assets/images/ui/coin.png').convert_alpha(), (16, 16))
+        return pygame.transform.scale(pygame.image.load(resource_path('assets/images/ui/coin.png')).convert_alpha(), (16, 16))
 
     def load_level(self):
         self.all_sprites = pygame.sprite.Group()
@@ -103,18 +103,6 @@ class Level:
 
         self.player.blocks = self.blocks
         
-
-    def create_default_level(self):
-        print("Создание тестового уровня")
-        # Создаем игрока
-        self.player = Player(100, 100)
-        self.all_sprites.add(self.player)
-        
-        # Создаем платформу
-        for x in range(0, 800, 32):
-            block = Block(x, 500)
-            self.blocks.add(block)
-            self.all_sprites.add(block)
 
     def update(self):
         try:

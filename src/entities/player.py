@@ -1,5 +1,6 @@
 import pygame
 from src.config import *
+from resource_path import resource_path
 
 
 class Player(pygame.sprite.Sprite):
@@ -45,18 +46,18 @@ class Player(pygame.sprite.Sprite):
     def load_sprites(self, is_big=False):
         self.sprites = {
             'idle': [
-                pygame.image.load(f'assets/images/characters/mario/small/idle.png')
+                pygame.image.load(resource_path(f'assets/images/characters/mario/small/idle.png'))
             ],
             'run': [
-                pygame.image.load(f'assets/images/characters/mario/small/run1.png'),
-                pygame.image.load(f'assets/images/characters/mario/small/run2.png'),
-                pygame.image.load(f'assets/images/characters/mario/small/run3.png')
+                pygame.image.load(resource_path(f'assets/images/characters/mario/small/run1.png')),
+                pygame.image.load(resource_path(f'assets/images/characters/mario/small/run2.png')),
+                pygame.image.load(resource_path(f'assets/images/characters/mario/small/run3.png'))
             ],
             'jump': [
-                pygame.image.load(f'assets/images/characters/mario/small/jump.png')
+                pygame.image.load(resource_path(f'assets/images/characters/mario/small/jump.png'))
             ],
             'fall': [
-                pygame.image.load(f'assets/images/characters/mario/small/death.png')
+                pygame.image.load(resource_path(f'assets/images/characters/mario/small/death.png'))
             ]
         }
 
@@ -84,20 +85,20 @@ class Player(pygame.sprite.Sprite):
     def load_big_sprites(self):
         self.sprites = {
             'idle': [
-                pygame.transform.scale(pygame.image.load(f'assets/images/characters/mario/big/idle.png'), (32, 64))
+                pygame.transform.scale(pygame.image.load(resource_path(f'assets/images/characters/mario/big/idle.png')), (32, 64))
             ],
             'run': [
-                pygame.transform.scale(pygame.image.load(f'assets/images/characters/mario/big/run1.png'), (32, 64)),
-                pygame.transform.scale(pygame.image.load(f'assets/images/characters/mario/big/run2.png'), (32, 64)),
-                pygame.transform.scale(pygame.image.load(f'assets/images/characters/mario/big/run3.png'), (32, 64))
+                pygame.transform.scale(pygame.image.load(resource_path(f'assets/images/characters/mario/big/run1.png')), (32, 64)),
+                pygame.transform.scale(pygame.image.load(resource_path(f'assets/images/characters/mario/big/run2.png')), (32, 64)),
+                pygame.transform.scale(pygame.image.load(resource_path(f'assets/images/characters/mario/big/run3.png')), (32, 64))
                 
             ],
             'jump': [
-                pygame.transform.scale(pygame.image.load(f'assets/images/characters/mario/big/jump.png'), (32, 64))
+                pygame.transform.scale(pygame.image.load(resource_path(f'assets/images/characters/mario/big/jump.png')), (32, 64))
                 
             ],
             'fall': [
-                pygame.transform.scale(pygame.image.load(f'assets/images/characters/mario/big/death.png'), (32, 64))
+                pygame.transform.scale(pygame.image.load(resource_path(f'assets/images/characters/mario/big/death.png')), (32, 64))
                 
             ]
         }
@@ -199,6 +200,9 @@ class Player(pygame.sprite.Sprite):
 
     def apply_gravity(self):
         if not self.on_ground:
+            if self.rect.y > 600:
+                self.Death()
+
             self.velocity_y += self.GRAVITY * (self.tick/1000) # Применяем гравитацию к вертикальной скорости
             if self.velocity_y > MAX_FALL_SPEED:
                 self.velocity_y = MAX_FALL_SPEED

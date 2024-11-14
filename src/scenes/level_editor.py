@@ -9,6 +9,7 @@ from src.entities.enemies import get_all_enemies
 from src.entities.powerups import get_all_powerups
 from src.entities.coin import Coin
 from pygame.locals import *
+from resource_path import resource_path
 
 
 class LevelEditor:
@@ -42,7 +43,7 @@ class LevelEditor:
 
         for asset_file in assets_path.rglob('*.png'):
             asset_name = asset_file.stem
-            image = pygame.image.load(str(asset_file))
+            image = pygame.image.load(resource_path(str(asset_file)))
             
             self.tiles[asset_name] = image
             button_rect = pygame.Rect(WINDOW_WIDTH - 180, len(self.asset_buttons) * 40 + 10, 160, 32)
@@ -72,7 +73,7 @@ class LevelEditor:
 
         for enemy in enemies:
             asset_name = enemy['enemy_name']
-            image = pygame.image.load(str(enemy['image_path']))
+            image = pygame.image.load(resource_path(str(enemy['image_path'])))
 
             aspect_ratio = image.get_width() / image.get_height()
 
@@ -115,7 +116,7 @@ class LevelEditor:
 
         for powerup in powerups:
             asset_name = powerup['item_name']
-            image = pygame.image.load(str(powerup['image_path']))
+            image = pygame.image.load(resource_path(str(powerup['image_path'])))
 
             aspect_ratio = image.get_width() / image.get_height()
 

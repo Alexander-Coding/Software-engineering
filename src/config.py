@@ -1,8 +1,8 @@
 # Настройки окна
-WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 600
+WINDOW_WIDTH = 1600
+WINDOW_HEIGHT = 800
 FPS = 60
-TITLE = "Super Mario Bros Python"
+TITLE = "Super Mario-style"
 
 # Цвета
 WHITE = (255, 255, 255)
@@ -13,9 +13,9 @@ BLUE = (0, 0, 255)
 
 # Настройки игрока
 PLAYER_SPEED = 250
-PLAYER_JUMP_POWER = 5
-MAX_FALL_SPEED = 15
-GRAVITY = 10
+PLAYER_JUMP_POWER = 7
+MAX_FALL_SPEED = 18
+GRAVITY = 12
 
 # Пути к файлам
 SAVE_FILE = "save_data.json"

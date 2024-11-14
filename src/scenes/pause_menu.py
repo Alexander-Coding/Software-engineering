@@ -1,7 +1,6 @@
 import pygame
-import json
 from src.config import *
-from src.utils import SaveSystem
+from resource_path import resource_path
 
 
 class PauseMenu:
@@ -18,7 +17,7 @@ class PauseMenu:
         self.font = pygame.font.Font(None, 36)
 
         # Загружаем фон
-        self.background_image = pygame.image.load('assets/images/backgrounds/sky.png').convert_alpha()
+        self.background_image = pygame.image.load(resource_path('assets/images/backgrounds/sky.png')).convert_alpha()
         self.background_image = pygame.transform.scale(self.background_image, (WINDOW_WIDTH, WINDOW_HEIGHT))
 
         # Дополнительные атрибуты для подсветки кнопок

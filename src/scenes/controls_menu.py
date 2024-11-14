@@ -1,5 +1,7 @@
 import pygame
 from src.config import *
+from resource_path import resource_path
+
 
 class ControlsMenu:
     def __init__(self, game):
@@ -7,12 +9,12 @@ class ControlsMenu:
         self.font = pygame.font.Font(None, 36)
 
         # Загружаем фон
-        self.background_image = pygame.image.load('assets/images/backgrounds/main_menu_background.png').convert_alpha()
+        self.background_image = pygame.image.load(resource_path('assets/images/backgrounds/main_menu_background.png')).convert_alpha()
         # Замените 'assets/images/backgrounds/controls_background.png' на фактический путь к вашему файлу фона
         self.background_image = pygame.transform.scale(self.background_image, (WINDOW_WIDTH, WINDOW_HEIGHT))
 
         # Загружаем изображение с управлением
-        self.controls_image = pygame.image.load('assets/images/backgrounds/key.png').convert_alpha()
+        self.controls_image = pygame.image.load(resource_path('assets/images/backgrounds/key.png')).convert_alpha()
         # Замените 'assets/images/controls.png' на фактический путь к вашему файлу изображения с управлением
         self.controls_image = pygame.transform.scale(self.controls_image, (400, 300))
 

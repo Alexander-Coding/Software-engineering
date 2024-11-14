@@ -1,4 +1,5 @@
 import pygame
+from resource_path import resource_path
 
 
 class Star(pygame.sprite.Sprite):
@@ -51,16 +52,16 @@ class Star(pygame.sprite.Sprite):
     def load_sprites(self):       
         self.sprites = {
             'dark': [
-                pygame.transform.scale(pygame.image.load('assets/images/items/powerups/star_dark.png'), (28, 28))
+                pygame.transform.scale(pygame.image.load(resource_path('assets/images/items/powerups/star_dark.png')), (28, 28))
             ],
             'green': [
-                pygame.transform.scale(pygame.image.load('assets/images/items/powerups/star_green.png'), (28, 28))
+                pygame.transform.scale(pygame.image.load(resource_path('assets/images/items/powerups/star_green.png')), (28, 28))
             ],
             'red': [
-                pygame.transform.scale(pygame.image.load('assets/images/items/powerups/star_red.png'), (28, 28))
+                pygame.transform.scale(pygame.image.load(resource_path('assets/images/items/powerups/star_red.png')), (28, 28))
             ],
             'white': [
-                pygame.transform.scale(pygame.image.load('assets/images/items/powerups/star_white.png'), (28, 28))
+                pygame.transform.scale(pygame.image.load(resource_path('assets/images/items/powerups/star_white.png')), (28, 28))
             ]
         }
 

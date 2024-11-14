@@ -1,6 +1,7 @@
 import pygame
 import pygame.locals
 from src.config import *
+from resource_path import resource_path
 from src.entities import powerups
 
 
@@ -23,7 +24,7 @@ class PowerUp(pygame.sprite.Sprite):
 
     
     def load_brick_sprite(self):
-        return pygame.image.load('assets/images/blocks/bricks/brick.png')
+        return pygame.image.load(resource_path('assets/images/blocks/bricks/brick.png'))
     
 
     def block_hit(self):

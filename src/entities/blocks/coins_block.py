@@ -1,6 +1,7 @@
 import pygame
 import random
 from src.entities import Coin
+from resource_path import resource_path
 
 
 class FlyCoins(Coin):
@@ -32,13 +33,13 @@ class CoinsBlock(pygame.sprite.Sprite):
 
     @staticmethod
     def get_asset():
-        return pygame.image.load('assets/images/blocks/question/question.png')
+        return pygame.image.load(resource_path('assets/images/blocks/question/question.png'))
 
     def load_sprite(self):
-        return pygame.image.load('assets/images/blocks/question/question.png')
+        return pygame.image.load(resource_path('assets/images/blocks/question/question.png'))
 
     def get_empty_block_asset(self):
-        return pygame.image.load('assets/images/blocks/question/empty.png')
+        return pygame.image.load(resource_path('assets/images/blocks/question/empty.png'))
 
     def get_coin_count(self):
         return random.randint(3, 15)

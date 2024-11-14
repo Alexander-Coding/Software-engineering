@@ -1,5 +1,6 @@
 import math
 import pygame
+from resource_path import resource_path
 from src.entities.enemy import Enemy
 
 
@@ -43,8 +44,8 @@ class Blooper(Enemy):
         }
         
         self.sprites = {
-            'swim': [pygame.image.load(path).convert_alpha() for path in sprite_paths[self.variant]['swim']],
-            'chase': [pygame.image.load(path).convert_alpha() for path in sprite_paths[self.variant]['chase']]
+            'swim': [pygame.image.load(resource_path(path)).convert_alpha() for path in sprite_paths[self.variant]['swim']],
+            'chase': [pygame.image.load(resource_path(path)).convert_alpha() for path in sprite_paths[self.variant]['chase']]
         }
 
         self.image = self.sprites['chase'][0]

@@ -1,5 +1,6 @@
 import math
 import pygame
+from resource_path import resource_path
 from src.entities.enemy import Enemy
 from src.config import *
 
@@ -137,19 +138,19 @@ class Koopa(Enemy):
         # Загружаем базовые спрайты
         self.sprites = {
             'walk': [
-                pygame.image.load(path).convert_alpha() 
+                pygame.image.load(resource_path(path)).convert_alpha() 
                 for path in sprite_paths[self.variant]['walk']
             ],
             'shell': [
-                pygame.image.load(path).convert_alpha() 
+                pygame.image.load(resource_path(path)).convert_alpha() 
                 for path in sprite_paths[self.variant]['shell']
             ],
             'shell_wake': [
-                pygame.image.load(path).convert_alpha() 
+                pygame.image.load(resource_path(path)).convert_alpha() 
                 for path in sprite_paths[self.variant]['shell_wake']
             ],
             'fly': [
-                pygame.image.load(path).convert_alpha() 
+                pygame.image.load(resource_path(path)).convert_alpha() 
                 for path in sprite_paths[self.variant]['fly']
             ]
         }
@@ -216,23 +217,29 @@ class Koopa(Enemy):
     def walk_movement(self):
         self.velocity_x = 1
         self.current_time = pygame.time.get_ticks()
+
         for block in self.blocks:
             if block.rect.colliderect(self.rect.move(self.velocity_x, 0)):
                 self.velocity_x = 0
+
                 if self.current_time - self.last_reverse_time >= self.reverse_interval:
                     self.reverse_direction()
                     self.last_reverse_time = self.current_time
                     self.velocity_x = 1
+
             if block.rect.colliderect(self.rect.move(0, self.velocity_y)):
                 if self.velocity_y > 0:  # Падение
                     self.rect.bottom = block.rect.top  # Устанавливаем игрока на верх блока
                     self.velocity_y = 0
                     self.on_ground = True  # Игрок на земле
+
                 elif self.velocity_y < 0:  # Подъем (прыжок)
                     self.rect.top = block.rect.bottom  # Устанавливаем игрока на низ блока
                     self.velocity_y = 0
+
         if not self.handle_collision():
             self.on_ground = False
+
         self.rect.x += self.velocity_x * self.direction
         self.rect.y += self.velocity_y
 
@@ -247,17 +254,11 @@ class Koopa(Enemy):
         collision_y = False
 
         for block in self.blocks:
-            # if block.rect.colliderect(self.rect.move(self.velocity_x, 0)):
-            #     self.velocity_x = 0
-            #     if self.current_time - self.last_reverse_time >= self.reverse_interval:
-            #         self.reverse_direction()
-            #         self.last_reverse_time = self.current_time
-            #         self.velocity_x = 1
             if block.rect.colliderect(self.rect.move(0, new_y_position - self.rect.y)):
                 collision_y = True  # Отмечаем, что произошло столкновение по Y
+
         if not collision_y:
             self.rect.y = new_y_position
-        # self.rect.x += self.velocity_x * self.direction
 
     def enter_shell(self):
         self.is_shell_mode = True
@@ -297,10 +298,12 @@ class Koopa(Enemy):
         if self.behavior == "flying":
             self.behavior = "walking"
             self.player.kill_enemy()
+
         else:
             if not self.is_shell_mode:
                 self.enter_shell()
                 self.player.kill_enemy()
+
             else:
                 if not self.is_kicked:
                     self.kick_shell(1 if self.rect.x < self.get_player_position()[0] else -1)
